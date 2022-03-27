@@ -1,8 +1,9 @@
 package org.apache.maven.satellite_capture_game;
 
-import gov.nasa.worldwind.WorldWindow;
+import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.Ellipsoid;
 import gov.nasa.worldwind.render.Polyline;
 
 import java.awt.Color;
@@ -13,7 +14,7 @@ public class Trajectory
     private Polyline path;
     private final ArrayList<Position> pos;
 
-    private WorldWindow wwd;
+    private WorldWindowGLCanvas wwd;
     private final RenderableLayer layer;
 
     private int ict;
@@ -27,8 +28,12 @@ public class Trajectory
     private double latPrev;
     private double lonPrev;
     private double altPrev;
+    
+    UI ev;
+    Satellite s;
+    Ellipsoid e;
 
-    public Trajectory(double lat, double lon, double alt) {
+    public Trajectory(double lat, double lon, double alt, UI ev) {
         this.lat = lat;
         this.lon = lon;
         this.alt = alt;
@@ -47,6 +52,11 @@ public class Trajectory
         layer = new RenderableLayer();
 
         ict = 0;
+        
+        this.ev = ev;
+        wwd = ev.getWorldWindowGLCanvas();
+        s = new Satellite(this.lat, this.lon, this.alt, wwd);
+        e = s.getShape();
     }
 
     public void propagateTrajectory()
@@ -60,6 +70,8 @@ public class Trajectory
         pos.add(ict,Position.fromDegrees(lat, lon, alt));
 
         path.setPositions(pos);
+        
+        e.setCenterPosition(pos.get(ict));
 
         wwd.redrawNow();
         
@@ -80,7 +92,7 @@ public class Trajectory
         lonRate = (1.0 / resDial) * 2.0 * 0.30;
     }
 
-    public void loadWorldWindModel(WorldWindow wwd)
+    public void loadWorldWindModel(WorldWindowGLCanvas wwd)
     {
         this.wwd = wwd;
 

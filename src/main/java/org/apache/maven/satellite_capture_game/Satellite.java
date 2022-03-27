@@ -16,8 +16,8 @@ public class Satellite {
 	private ShapeAttributes attrs;
 	private Position position;
 	
-	public Satellite(WorldWindow wwd) {
-		position = Position.fromDegrees(0.0, 0.0, 5000000.0);
+	public Satellite(double lat, double lon, double alt, WorldWindow wwd) {
+		position = Position.fromDegrees(lat, lon, alt);
 		satellite = new Ellipsoid(position, 60000, 60000, 60000);
         layer = new RenderableLayer();
 		attrs = new BasicShapeAttributes();
@@ -40,5 +40,9 @@ public class Satellite {
         satellite.setValue(AVKey.DISPLAY_NAME, "Satellite");
         
         layer.addRenderable(satellite);
+	}
+	
+	public Ellipsoid getShape() {
+		return this.satellite;
 	}
 }

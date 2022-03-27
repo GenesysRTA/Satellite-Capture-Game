@@ -1,7 +1,5 @@
 package org.apache.maven.satellite_capture_game;
 
-import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-
 public class EarthProj
 {
     public static void main(String[] args)
@@ -13,14 +11,12 @@ public class EarthProj
         int timeDelay = 1000;
         
         Camera.initialConfigurations();
-        
-        Trajectory t = new Trajectory(lon, lat, alt);
-        t.setTrajResolution(resDial);
-        t.setTraj();
 
         UI ev = new UI();
-        WorldWindowGLCanvas wwd = ev.getWorldWindowGLCanvas();
-        Satellite s = new Satellite(wwd);
+        
+        Trajectory t = new Trajectory(lon, lat, alt, ev);
+        t.setTrajResolution(resDial);
+        t.setTraj();
         
         ev.setTimeDelay(timeDelay);
         ev.loadTrajectoryObjects(t);
