@@ -13,13 +13,10 @@ public class Trajectory
 {
     private Polyline path;
     private final ArrayList<Position> pos;
+    private int index;
 
     private WorldWindowGLCanvas wwd;
     private final RenderableLayer layer;
-
-    private int ict;
-    private double lonRate;
-    private double resDial;
 
     private double lat;
     private double lon;
@@ -29,11 +26,14 @@ public class Trajectory
     private double lonPrev;
     private double altPrev;
     
-    UI ev;
-    Satellite s;
-    Ellipsoid e;
+    private double lonRate;
+    private double resolution;
+    
+    UI ui;
+    private Satellite s;
+    private Ellipsoid e;
 
-    public Trajectory(double lat, double lon, double alt, UI ev) {
+    public Trajectory(double lat, double lon, double alt, UI ui) {
         this.lat = lat;
         this.lon = lon;
         this.alt = alt;
@@ -51,27 +51,27 @@ public class Trajectory
         
         layer = new RenderableLayer();
 
-        ict = 0;
+        index = 0;
         
-        this.ev = ev;
-        wwd = ev.getWorldWindowGLCanvas();
+        this.ui = ui;
+        wwd = ui.getWorldWindowGLCanvas();
         s = new Satellite(this.lat, this.lon, this.alt, wwd);
         e = s.getShape();
     }
 
     public void propagateTrajectory()
     {
-        pos.add(ict, Position.fromDegrees(latPrev, lonPrev, altPrev));
+        pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
 
-        ict++;
+        index++;
 
         lon = lon + lonRate;
 
-        pos.add(ict,Position.fromDegrees(lat, lon, alt));
+        pos.add(index,Position.fromDegrees(lat, lon, alt));
 
         path.setPositions(pos);
         
-        e.setCenterPosition(pos.get(ict));
+        e.setCenterPosition(pos.get(index));
 
         wwd.redrawNow();
         
@@ -79,17 +79,17 @@ public class Trajectory
         lonPrev = lon;
         altPrev = alt;
 
-        ict--;
+        index--;
     }
 
-    public void setTrajResolution(double resDial)
+    public void setTrajectoryResolution(double resolution)
     {
-        this.resDial = resDial;
+        this.resolution = resolution;
     }
     
-    public void setTraj()
+    public void setTrajectory()
     {
-        lonRate = (1.0 / resDial) * 2.0 * 0.30;
+        lonRate = (1.0 / resolution) * 2.0 * 0.3;
     }
 
     public void loadWorldWindModel(WorldWindowGLCanvas wwd)
