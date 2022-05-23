@@ -105,20 +105,20 @@ public final class UI
         t = getTargetTrajectoryObject();
         s = getSourceTrajectoryObject();
 
-        //while(true)
-        //{   
+        while(true)
+        {   
             t.propagateTrajectory(timeDelay);
             s.propagateTrajectory(timeDelay);
             
-//            try
-//            {
-//                Thread.sleep(timeDelay);
-//            }
-//            catch(Exception err)
-//            {
-//                System.out.println("Time delay error: " + err + "\n");
-//            }
-        //}
+            try
+            {
+                Thread.sleep(timeDelay);
+            }
+            catch(Exception err)
+            {
+                System.out.println("Time delay error: " + err + "\n");
+            }
+        }
     }
     
     private int timeDelay;
@@ -149,10 +149,10 @@ public final class UI
         return wwd;
     }
     
-    public static void insertBeforePlacenames(WorldWindow wwd, Layer layer)
+    public static void insertBeforePlacenames(WorldWindow wwd2, Layer layer)
     {
         int compassPosition = 0;
-        LayerList layers = wwd.getModel().getLayers();
+        LayerList layers = wwd2.getModel().getLayers();
         for (Layer l : layers)
         {
             if (l instanceof PlaceNameLayer)

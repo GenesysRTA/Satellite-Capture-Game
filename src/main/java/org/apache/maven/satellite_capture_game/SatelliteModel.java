@@ -1,6 +1,7 @@
 package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.*;
+import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.RenderableLayer;
@@ -8,29 +9,24 @@ import gov.nasa.worldwind.ogc.collada.ColladaRoot;
 import gov.nasa.worldwind.ogc.collada.impl.ColladaController;
 
 import javax.swing.*;
-import javax.xml.stream.XMLStreamException;
-
-import java.awt.event.*;
-import java.io.IOException;
-
 public class SatelliteModel extends Thread {
 	protected Object colladaSource;
 	protected Position position;
+	protected JInternalFrame appFrame;
 	protected WorldWindow wwd;
-	protected static ColladaRoot colladaRoot;
-	
-	public SatelliteModel(Object colladaSource, Position position, WorldWindow wwd) throws IOException, XMLStreamException
+
+	public SatelliteModel(Object colladaSource, Position position, WorldWindow wwd)
     {
         this.colladaSource = colladaSource;
         this.position = position;
         this.wwd = wwd;
-        colladaRoot = ColladaRoot.createAndParse(this.colladaSource);
     }
-	
+
 	public void run()
     {
         try
         {
+            final ColladaRoot colladaRoot = ColladaRoot.createAndParse(this.colladaSource);
             colladaRoot.setPosition(this.position);
             colladaRoot.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
             colladaRoot.setModelScale(new Vec4(100000, 100000, 100000));
@@ -49,7 +45,7 @@ public class SatelliteModel extends Thread {
             e.printStackTrace();
         }
     }
-	
+
 	protected void addColladaLayer(ColladaRoot colladaRoot)
     {
         // Create a ColladaController to adapt the ColladaRoot to the World Wind renderable interface.
@@ -61,27 +57,9 @@ public class SatelliteModel extends Thread {
         wwd.getModel().getLayers().add(layer);
     }
 	
-	public static void move(Position oldPos, Position newPos, int timeDelay)
+	public void setPosition(Position position)
 	{
-		int delay = timeDelay; //milliseconds
-        ActionListener taskPerformer = new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
-                //double deltaDegrees = 0.001;
-                //Position position = colladaRoot.getPosition();
-                Position newPosition = newPos;
-
-                // Move the model
-                colladaRoot.setPosition(newPosition);
-            }
-        };
-        new Timer(delay, taskPerformer).start();
-	}
-	
-	public void setCenterPosition(Position pos)
-	{
-		this.position = pos;
+		this.position = position;
 	}
 
 }

@@ -32,7 +32,7 @@ public class Trajectory
     //private Ellipsoid e;
     private SatelliteModel e;
 
-    public Trajectory(double[][] posVel, UI ui, boolean isSource) throws IOException, XMLStreamException {
+    public Trajectory(double[][] posVel, UI ui, boolean isSource) {
         this.lat = posVel[0][0];
         this.lon = posVel[0][1];
         this.alt = posVel[0][2];
@@ -65,8 +65,8 @@ public class Trajectory
         	posVelIndex++;
         }
         
-        SatelliteModel.move(Position.fromDegrees(latPrev, lonPrev, altPrev), Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]), timeDelay);
-        
+        //e.setCenterPosition(pos.get(index));
+        e.setPosition(pos.get(index));
 
         wwd.redrawNow();
         
@@ -77,31 +77,6 @@ public class Trajectory
         index--;
     }
 
-//    public void propagateTrajectory()
-//    {
-//        pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
-//
-//        index++;
-//
-//        pos.add(index, Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]));
-//        
-//        if (posVelIndex < posVel.length - 1) {
-//        	posVelIndex++;
-//        }
-//        
-//        e.setCenterPosition(pos.get(index));
-//        System.out.println(pos.get(index));
-//        
-//
-//        wwd.redrawNow();
-//        
-//        latPrev = lat;
-//        lonPrev = lon;
-//        altPrev = alt;
-//
-//        index--;
-//    }
-    
     public double[] getInitialPosition() {
     	double[] position = new double[3];
     	

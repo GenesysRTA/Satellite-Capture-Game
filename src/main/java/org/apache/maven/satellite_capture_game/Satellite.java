@@ -1,10 +1,5 @@
 package org.apache.maven.satellite_capture_game;
-
 import java.io.File;
-import java.io.IOException;
-
-import javax.swing.JInternalFrame;
-import javax.xml.stream.XMLStreamException;
 
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
@@ -15,7 +10,6 @@ import gov.nasa.worldwind.render.BasicShapeAttributes;
 import gov.nasa.worldwind.render.Ellipsoid;
 import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.ShapeAttributes;
-
 public class Satellite {
 	//private Ellipsoid satellite;
 	private SatelliteModel satellite;
@@ -23,8 +17,8 @@ public class Satellite {
 	private ShapeAttributes attrs;
 	private Position position;
 	private File modelPath;
-	
-	public Satellite(double lat, double lon, double alt, WorldWindow wwd, boolean isSource) throws IOException, XMLStreamException {
+
+	public Satellite(double lat, double lon, double alt, WorldWindow wwd, boolean isSource) {
 		position = Position.fromDegrees(lat, lon, alt);
 		//satellite = new Ellipsoid(position, 600000, 600000, 600000);
 		if (isSource)
@@ -39,7 +33,7 @@ public class Satellite {
 		satellite.run();
         layer = new RenderableLayer();
 		attrs = new BasicShapeAttributes();
-		
+
 		//createSatellite(satellite, layer, attrs);
         
         UI.insertBeforePlacenames(wwd, layer);
