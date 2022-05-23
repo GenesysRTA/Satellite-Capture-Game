@@ -4,7 +4,10 @@ import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.render.Ellipsoid;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.xml.stream.XMLStreamException;
 
 public class Trajectory
 {
@@ -26,9 +29,10 @@ public class Trajectory
     
     UI ui;
     private Satellite s;
-    private Ellipsoid e;
+    //private Ellipsoid e;
+    private SatelliteModel e;
 
-    public Trajectory(double[][] posVel, UI ui) {
+    public Trajectory(double[][] posVel, UI ui, boolean isSource) throws IOException, XMLStreamException {
         this.lat = posVel[0][0];
         this.lon = posVel[0][1];
         this.alt = posVel[0][2];
@@ -44,11 +48,12 @@ public class Trajectory
         
         this.ui = ui;
         wwd = ui.getWorldWindowGLCanvas();
-        s = new Satellite(this.lat, this.lon, this.alt, wwd);
-        e = s.getShape();
+        s = new Satellite(this.lat, this.lon, this.alt, wwd, isSource);
+        //e = s.getShape();
+        e = s.getSatelliteShape();
     }
-
-    public void propagateTrajectory()
+    
+    public void propagateTrajectory(int timeDelay)
     {
         pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
 
@@ -60,7 +65,8 @@ public class Trajectory
         	posVelIndex++;
         }
         
-        e.setCenterPosition(pos.get(index));
+        SatelliteModel.move(Position.fromDegrees(latPrev, lonPrev, altPrev), Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]), timeDelay);
+        
 
         wwd.redrawNow();
         
@@ -70,6 +76,31 @@ public class Trajectory
 
         index--;
     }
+
+//    public void propagateTrajectory()
+//    {
+//        pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
+//
+//        index++;
+//
+//        pos.add(index, Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]));
+//        
+//        if (posVelIndex < posVel.length - 1) {
+//        	posVelIndex++;
+//        }
+//        
+//        e.setCenterPosition(pos.get(index));
+//        System.out.println(pos.get(index));
+//        
+//
+//        wwd.redrawNow();
+//        
+//        latPrev = lat;
+//        lonPrev = lon;
+//        altPrev = alt;
+//
+//        index--;
+//    }
     
     public double[] getInitialPosition() {
     	double[] position = new double[3];

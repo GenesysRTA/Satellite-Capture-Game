@@ -1,5 +1,11 @@
 package org.apache.maven.satellite_capture_game;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.swing.JInternalFrame;
+import javax.xml.stream.XMLStreamException;
+
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
@@ -11,18 +17,30 @@ import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.ShapeAttributes;
 
 public class Satellite {
-	private Ellipsoid satellite;
+	//private Ellipsoid satellite;
+	private SatelliteModel satellite;
 	private RenderableLayer layer;
 	private ShapeAttributes attrs;
 	private Position position;
+	private File modelPath;
 	
-	public Satellite(double lat, double lon, double alt, WorldWindow wwd) {
+	public Satellite(double lat, double lon, double alt, WorldWindow wwd, boolean isSource) throws IOException, XMLStreamException {
 		position = Position.fromDegrees(lat, lon, alt);
-		satellite = new Ellipsoid(position, 600000, 600000, 600000);
+		//satellite = new Ellipsoid(position, 600000, 600000, 600000);
+		if (isSource)
+		{
+			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled2.dae");
+		}
+		else
+		{
+			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled.dae");
+		}
+		satellite = new SatelliteModel(modelPath, position, wwd);
+		satellite.run();
         layer = new RenderableLayer();
 		attrs = new BasicShapeAttributes();
 		
-		createSatellite(satellite, layer, attrs);
+		//createSatellite(satellite, layer, attrs);
         
         UI.insertBeforePlacenames(wwd, layer);
 	}
@@ -42,7 +60,11 @@ public class Satellite {
         layer.addRenderable(satellite);
 	}
 	
-	public Ellipsoid getShape() {
+//	public Ellipsoid getShape() {
+//		return this.satellite;
+//	}
+	
+	public SatelliteModel getSatelliteShape() {
 		return this.satellite;
 	}
 }

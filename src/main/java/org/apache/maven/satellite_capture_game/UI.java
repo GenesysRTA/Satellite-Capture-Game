@@ -5,10 +5,8 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
-import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.layers.ViewControlsLayer;
 import gov.nasa.worldwind.layers.ViewControlsSelectListener;
 import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
@@ -18,7 +16,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
@@ -30,7 +27,7 @@ import javax.swing.border.BevelBorder;
 
 public final class UI
 {
-    private final JInternalFrame ew;
+    private static final JInternalFrame ew = new JInternalFrame("Earth View");;
 
     private final JPanel mainPanel;
     private final JPanel subPanel;
@@ -58,9 +55,6 @@ public final class UI
         desktopPane.setVisible(true);
 
         mainFrame.add(desktopPane);
-
-
-        ew = new JInternalFrame("Earth View");
 
         ew.setResizable(true);
         ew.setSize(1500,1000);
@@ -104,8 +98,6 @@ public final class UI
         ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
         insertBeforePlacenames(wwd, viewControlsLayer);
         wwd.addSelectListener(new ViewControlsSelectListener(wwd, viewControlsLayer));
-        new SatelliteModel(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled.dae"),
-                Position.fromDegrees(40.00779229910037, -105.27494931422459, 1000000), ew, wwd).start();
     }
 
     public void trajectorySimulation()
@@ -113,20 +105,20 @@ public final class UI
         t = getTargetTrajectoryObject();
         s = getSourceTrajectoryObject();
 
-        while(true)
-        {   
-            t.propagateTrajectory();
-            s.propagateTrajectory();
+        //while(true)
+        //{   
+            t.propagateTrajectory(timeDelay);
+            s.propagateTrajectory(timeDelay);
             
-            try
-            {
-                Thread.sleep(timeDelay);
-            }
-            catch(Exception err)
-            {
-                System.out.println("Time delay error: " + err + "\n");
-            }
-        }
+//            try
+//            {
+//                Thread.sleep(timeDelay);
+//            }
+//            catch(Exception err)
+//            {
+//                System.out.println("Time delay error: " + err + "\n");
+//            }
+        //}
     }
     
     private int timeDelay;
@@ -155,11 +147,6 @@ public final class UI
     public WorldWindowGLCanvas getWorldWindowGLCanvas()
     {
         return wwd;
-    }
-    
-    public JInternalFrame getJInternalFrame()
-    {
-        return ew;
     }
     
     public static void insertBeforePlacenames(WorldWindow wwd, Layer layer)
