@@ -4,22 +4,32 @@ public class Main
 {
     public static void main(String[] args)
     {
-        double lon = 0.0;
-        double lat = 0.0;
-        double alt = 2000000.0;
-        double resolution = 10.0;
-        int timeDelay = 1000;
+        final double duration = 6000.0;
+        
+        final double massTarget = 1000.0;
+        final double maTarget = 349.8637;
+        final double outputStepTarget = 6.0;
+        double[][] posVelTarget = new double[(int) (duration / outputStepTarget + 1)][3];
+        posVelTarget = Propagate.executePropagation(outputStepTarget, duration, massTarget, maTarget, false);
+        
+        final double massSource = 250.0;
+        final double maSource = 334.8637;
+        final double outputStepSource = 10.0;
+        double[][] posVelSource = new double[(int) (duration / outputStepSource + 1)][3];
+        posVelSource = Propagate.executePropagation(outputStepSource, duration, massSource, maSource, true);
+        
+        int timeDelay = 100;
         
         Camera.initialConfigurations();
 
         UI ui = new UI();
         
-        Trajectory t = new Trajectory(lon, lat, alt, ui);
-        t.setTrajectoryResolution(resolution);
-        t.setTrajectory();
+        Trajectory tTarget = new Trajectory(posVelTarget, ui);
+        Trajectory tSource = new Trajectory(posVelSource, ui);
         
         ui.setTimeDelay(timeDelay);
-        ui.loadTrajectoryObject(t);
+        ui.loadTrajectoryObjects(tTarget, tSource);
         ui.trajectorySimulation();
+        
     }
 }

@@ -18,7 +18,7 @@ public class Satellite {
 	
 	public Satellite(double lat, double lon, double alt, WorldWindow wwd) {
 		position = Position.fromDegrees(lat, lon, alt);
-		satellite = new Ellipsoid(position, 60000, 60000, 60000);
+		satellite = new Ellipsoid(position, 600000, 600000, 600000);
         layer = new RenderableLayer();
 		attrs = new BasicShapeAttributes();
 		

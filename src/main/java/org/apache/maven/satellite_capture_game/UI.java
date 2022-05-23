@@ -5,8 +5,10 @@ import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.layers.ViewControlsLayer;
 import gov.nasa.worldwind.layers.ViewControlsSelectListener;
 import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
@@ -16,6 +18,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
@@ -34,7 +37,7 @@ public final class UI
 
     private final WorldWindowGLCanvas wwd;
 
-    private Trajectory t;
+    private Trajectory t, s;
 
     public UI()
     {
@@ -101,17 +104,20 @@ public final class UI
         ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
         insertBeforePlacenames(wwd, viewControlsLayer);
         wwd.addSelectListener(new ViewControlsSelectListener(wwd, viewControlsLayer));
+        new SatelliteModel(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled.dae"),
+                Position.fromDegrees(40.00779229910037, -105.27494931422459, 1000000), ew, wwd).start();
     }
 
     public void trajectorySimulation()
     {
-        t = getTrajectoryObject();
-        t.loadWorldWindModel(wwd);
+        t = getTargetTrajectoryObject();
+        s = getSourceTrajectoryObject();
 
         while(true)
         {   
             t.propagateTrajectory();
-
+            s.propagateTrajectory();
+            
             try
             {
                 Thread.sleep(timeDelay);
@@ -125,14 +131,20 @@ public final class UI
     
     private int timeDelay;
     
-    public Trajectory getTrajectoryObject()
+    public Trajectory getTargetTrajectoryObject()
     {
         return t;
     }
     
-    public void loadTrajectoryObject(Trajectory t)
+    public Trajectory getSourceTrajectoryObject()
+    {
+        return s;
+    }
+    
+    public void loadTrajectoryObjects(Trajectory t, Trajectory s)
     {
         this.t = t;
+        this.s = s;
     }
     
     public void setTimeDelay(int timeDelay)
@@ -143,6 +155,11 @@ public final class UI
     public WorldWindowGLCanvas getWorldWindowGLCanvas()
     {
         return wwd;
+    }
+    
+    public JInternalFrame getJInternalFrame()
+    {
+        return ew;
     }
     
     public static void insertBeforePlacenames(WorldWindow wwd, Layer layer)

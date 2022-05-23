@@ -2,21 +2,19 @@ package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.layers.RenderableLayer;
 import gov.nasa.worldwind.render.Ellipsoid;
-import gov.nasa.worldwind.render.Polyline;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 public class Trajectory
 {
-    private Polyline path;
     private final ArrayList<Position> pos;
     private int index;
+    
+    private double[][] posVel;
+    private int posVelIndex;
 
     private WorldWindowGLCanvas wwd;
-    private final RenderableLayer layer;
 
     private double lat;
     private double lon;
@@ -26,32 +24,23 @@ public class Trajectory
     private double lonPrev;
     private double altPrev;
     
-    private double lonRate;
-    private double resolution;
-    
     UI ui;
     private Satellite s;
     private Ellipsoid e;
 
-    public Trajectory(double lat, double lon, double alt, UI ui) {
-        this.lat = lat;
-        this.lon = lon;
-        this.alt = alt;
-        this.latPrev = lat;
-        this.lonPrev = lon;
-        this.altPrev = alt;
-        
-        path = new Polyline();
-        path.setColor(Color.RED);
-        path.setLineWidth(3.0);
-        path.setPathType(Polyline.LINEAR);
-        path.setFollowTerrain(false);
+    public Trajectory(double[][] posVel, UI ui) {
+        this.lat = posVel[0][0];
+        this.lon = posVel[0][1];
+        this.alt = posVel[0][2];
+        this.latPrev = posVel[0][0];
+        this.lonPrev = posVel[0][1];
+        this.altPrev = posVel[0][2];
+        this.posVel = posVel;
 
         pos  = new ArrayList <>();
-        
-        layer = new RenderableLayer();
 
         index = 0;
+        posVelIndex = 1;
         
         this.ui = ui;
         wwd = ui.getWorldWindowGLCanvas();
@@ -65,11 +54,11 @@ public class Trajectory
 
         index++;
 
-        lon = lon + lonRate;
-
-        pos.add(index,Position.fromDegrees(lat, lon, alt));
-
-        path.setPositions(pos);
+        pos.add(index, Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]));
+        
+        if (posVelIndex < posVel.length - 1) {
+        	posVelIndex++;
+        }
         
         e.setCenterPosition(pos.get(index));
 
@@ -80,25 +69,6 @@ public class Trajectory
         altPrev = alt;
 
         index--;
-    }
-
-    public void setTrajectoryResolution(double resolution)
-    {
-        this.resolution = resolution;
-    }
-    
-    public void setTrajectory()
-    {
-        lonRate = (1.0 / resolution) * 2.0 * 0.3;
-    }
-
-    public void loadWorldWindModel(WorldWindowGLCanvas wwd)
-    {
-        this.wwd = wwd;
-
-        layer.addRenderable(path);
-
-        this.wwd.getModel().getLayers().add(layer);
     }
     
     public double[] getInitialPosition() {

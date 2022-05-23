@@ -21,7 +21,7 @@ public class Camera {
 	public static void initialConfigurations() {
 		Configuration.setValue(AVKey.INITIAL_LATITUDE, 0.0);
         Configuration.setValue(AVKey.INITIAL_LONGITUDE, 0.0);
-        Configuration.setValue(AVKey.INITIAL_ALTITUDE, 12000000.0);
+        Configuration.setValue(AVKey.INITIAL_ALTITUDE, 75000000.0);
         Configuration.setValue(AVKey.INITIAL_PITCH, 50.0);
 	}
 }
