@@ -16,14 +16,30 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+
+import java.awt.Font;
+import java.awt.font.TextAttribute;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.awt.Toolkit;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
 
 public final class UI
 {
@@ -31,33 +47,86 @@ public final class UI
 
     private final JPanel mainPanel;
     private final JPanel subPanel;
+    private BufferedImage icon;
+    private Image bgImg;
 
     private final WorldWindowGLCanvas wwd;
 
     private Trajectory t, s;
 
-    public UI()
+    public UI() throws IOException
     {
-        JFrame mainFrame = new JFrame("Project");
+    	try {
+            bgImg = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\bg.jpg"));
+            icon = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\space.png"));
+            for (int x = 0; x < icon.getWidth(); x++) {
+                for (int y = 0; y < icon.getHeight(); y++) {
+                    int rgba = icon.getRGB(x, y);
+                    Color col = new Color(rgba, true);
+                    col = new Color(255 - col.getRed(),
+                                    255 - col.getGreen(),
+                                    255 - col.getBlue());
+                    icon.setRGB(x, y, col.getRGB());
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    	
+        JFrame mainFrame = new JFrame("Satellite Capture Game");
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int Width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        int Width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         mainFrame.setSize(Width - 150, height - 150);
 
-        mainFrame.setVisible(true);
+        mainFrame.setVisible(true);  
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.setResizable(true);
+        
+        JLabel menuTitle = new JLabel("Menu");
+        menuTitle.setBounds(170, 25, 200, 50);
+        menuTitle.setForeground(Color.WHITE);
+        menuTitle.setFont(new Font("Serif", Font.BOLD, 28));
+        mainFrame.add(menuTitle);
+        
+        Color blue = new Color(127, 127, 255);
+        RoundedButton btnStart = new RoundedButton("Start", 25, blue);
+        btnStart.setBounds(55, 80, 300, 50);
+        mainFrame.add(btnStart);
+        
+        Color green = new Color(127, 255, 127);
+        RoundedButton btnPause = new RoundedButton("Pause", 25, green);
+        btnPause.setBounds(55, 150, 300, 50);
+        mainFrame.add(btnPause);
+        
+        Color yellow = new Color(255, 255, 127);
+        RoundedButton btnRestart = new RoundedButton("Restart", 25, yellow);
+        btnRestart.setBounds(55, 220, 300, 50);
+        mainFrame.add(btnRestart);
+        
+        Color red = new Color(255, 127, 127);
+        RoundedButton btnExit = new RoundedButton("Exit", 25, red);
+        btnExit.setBounds(55, 290, 300, 50);
+        mainFrame.add(btnExit);
 
+        JDesktopPane desktopPane = new JDesktopPane() {
+			private static final long serialVersionUID = 7225728388897955897L;
 
-        JDesktopPane desktopPane = new JDesktopPane();
-        desktopPane.setBackground(new Color(230, 230, 230));
+			@Override
+            protected void paintComponent(Graphics grphcs) {
+                super.paintComponent(grphcs);
+                grphcs.drawImage(bgImg, 0, 0, null);
+            }
+        };
         desktopPane.setVisible(true);
 
         mainFrame.add(desktopPane);
 
+        ImageIcon frameIcon = new ImageIcon(icon);
         ew.setResizable(true);
         ew.setSize(1500,1000);
+        ew.setFrameIcon(frameIcon);
         ew.setMaximumSize(new Dimension(1150,1000));
         
         // Immobilize JInternalFrame
@@ -65,7 +134,7 @@ public final class UI
         	((javax.swing.plaf.basic.BasicInternalFrameUI) ew.getUI()).getNorthPane().removeMouseListener(listener);
         }
         
-        ew.setLocation(415,10);
+        ew.setLocation(415, 10);
 
         mainPanel = new JPanel();
         mainPanel.setOpaque(false);
@@ -98,6 +167,19 @@ public final class UI
         ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
         insertBeforePlacenames(wwd, viewControlsLayer);
         wwd.addSelectListener(new ViewControlsSelectListener(wwd, viewControlsLayer));
+        
+        JLabel bestScoresTitle = new JLabel("Best Scores");
+        bestScoresTitle.setBounds(140, 395, 200, 50);
+        bestScoresTitle.setForeground(Color.WHITE);
+        Font font = new Font("Serif", Font.PLAIN, 28);
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        bestScoresTitle.setFont(font.deriveFont(attributes));
+        mainFrame.add(bestScoresTitle);
+        
+        BestScoresTable table = new BestScoresTable();
+        JScrollPane pane = table.getScrollPane();
+        mainFrame.add(pane);
     }
 
     public void trajectorySimulation()
