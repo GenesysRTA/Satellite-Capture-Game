@@ -2,12 +2,8 @@ package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
-import gov.nasa.worldwind.render.Ellipsoid;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.xml.stream.XMLStreamException;
 
 public class Trajectory
 {
@@ -29,7 +25,6 @@ public class Trajectory
     
     UI ui;
     private Satellite s;
-    //private Ellipsoid e;
     private SatelliteModel e;
 
     public Trajectory(double[][] posVel, UI ui, boolean isSource) {
@@ -49,7 +44,6 @@ public class Trajectory
         this.ui = ui;
         wwd = ui.getWorldWindowGLCanvas();
         s = new Satellite(this.lat, this.lon, this.alt, wwd, isSource);
-        //e = s.getShape();
         e = s.getSatelliteShape();
     }
     
@@ -65,7 +59,6 @@ public class Trajectory
         	posVelIndex++;
         }
         
-        //e.setCenterPosition(pos.get(index));
         e.setPosition(pos.get(index));
 
         wwd.redrawNow();

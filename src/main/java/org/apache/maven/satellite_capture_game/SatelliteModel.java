@@ -1,7 +1,6 @@
 package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.*;
-import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Vec4;
 import gov.nasa.worldwind.layers.RenderableLayer;
@@ -9,11 +8,13 @@ import gov.nasa.worldwind.ogc.collada.ColladaRoot;
 import gov.nasa.worldwind.ogc.collada.impl.ColladaController;
 
 import javax.swing.*;
+
 public class SatelliteModel extends Thread {
 	protected Object colladaSource;
 	protected Position position;
 	protected JInternalFrame appFrame;
 	protected WorldWindow wwd;
+	protected ColladaRoot colladaRoot;
 
 	public SatelliteModel(Object colladaSource, Position position, WorldWindow wwd)
     {
@@ -26,7 +27,7 @@ public class SatelliteModel extends Thread {
     {
         try
         {
-            final ColladaRoot colladaRoot = ColladaRoot.createAndParse(this.colladaSource);
+            colladaRoot = ColladaRoot.createAndParse(this.colladaSource);
             colladaRoot.setPosition(this.position);
             colladaRoot.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
             colladaRoot.setModelScale(new Vec4(100000, 100000, 100000));
@@ -59,7 +60,7 @@ public class SatelliteModel extends Thread {
 	
 	public void setPosition(Position position)
 	{
-		this.position = position;
+		this.colladaRoot.setPosition(position);;
 	}
 
 }
