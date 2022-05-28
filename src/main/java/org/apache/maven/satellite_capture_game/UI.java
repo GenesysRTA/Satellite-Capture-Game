@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +44,8 @@ import javax.swing.table.DefaultTableModel;
 
 public final class UI
 {
-    private static final JInternalFrame ew = new JInternalFrame("Earth View");;
+    private static final JInternalFrame ew = new JInternalFrame("Earth View");
+    private boolean firstRun = true;
 
     private final JPanel mainPanel;
     private final JPanel subPanel;
@@ -54,7 +56,7 @@ public final class UI
 
     private Trajectory t, s;
 
-    public UI() throws IOException
+    public UI(String[] args) throws IOException
     {
     	try {
             bgImg = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\bg.jpg"));
@@ -90,25 +92,18 @@ public final class UI
         menuTitle.setFont(new Font("Serif", Font.BOLD, 28));
         mainFrame.add(menuTitle);
         
-        Color blue = new Color(127, 127, 255);
-        RoundedButton btnStart = new RoundedButton("Start", 25, blue);
-        btnStart.setBounds(55, 80, 300, 50);
-        mainFrame.add(btnStart);
+        Thread thread = Thread.currentThread();
+        Buttons buttons = new Buttons(mainFrame, thread, args);
+        buttons.start();
         
-        Color green = new Color(127, 255, 127);
-        RoundedButton btnPause = new RoundedButton("Pause", 25, green);
-        btnPause.setBounds(55, 150, 300, 50);
-        mainFrame.add(btnPause);
-        
-        Color yellow = new Color(255, 255, 127);
-        RoundedButton btnRestart = new RoundedButton("Restart", 25, yellow);
-        btnRestart.setBounds(55, 220, 300, 50);
-        mainFrame.add(btnRestart);
-        
-        Color red = new Color(255, 127, 127);
-        RoundedButton btnExit = new RoundedButton("Exit", 25, red);
-        btnExit.setBounds(55, 290, 300, 50);
-        mainFrame.add(btnExit);
+        JLabel bestScoresTitle = new JLabel("Best Scores");
+        bestScoresTitle.setBounds(140, 395, 200, 50);
+        bestScoresTitle.setForeground(Color.WHITE);
+        Font font = new Font("Serif", Font.PLAIN, 28);
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        bestScoresTitle.setFont(font.deriveFont(attributes));
+        mainFrame.add(bestScoresTitle);
 
         JDesktopPane desktopPane = new JDesktopPane() {
 			private static final long serialVersionUID = 7225728388897955897L;
@@ -168,15 +163,6 @@ public final class UI
         insertBeforePlacenames(wwd, viewControlsLayer);
         wwd.addSelectListener(new ViewControlsSelectListener(wwd, viewControlsLayer));
         
-        JLabel bestScoresTitle = new JLabel("Best Scores");
-        bestScoresTitle.setBounds(140, 395, 200, 50);
-        bestScoresTitle.setForeground(Color.WHITE);
-        Font font = new Font("Serif", Font.PLAIN, 28);
-        Map attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        bestScoresTitle.setFont(font.deriveFont(attributes));
-        mainFrame.add(bestScoresTitle);
-        
         BestScoresTable table = new BestScoresTable();
         JScrollPane pane = table.getScrollPane();
         mainFrame.add(pane);
@@ -199,6 +185,10 @@ public final class UI
             catch(Exception err)
             {
                 System.out.println("Time delay error: " + err + "\n");
+            }
+            if (firstRun) {
+            	Thread.currentThread().suspend();
+            	firstRun = false;
             }
         }
     }

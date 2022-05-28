@@ -26,14 +26,7 @@ public class Main
         
         Camera.initialConfigurations();
 
-        UI ui = new UI();
-        
-        Trajectory tTarget = new Trajectory(posVelTarget, ui, false);
-        Trajectory tSource = new Trajectory(posVelSource, ui, true);
-        
-        ui.setTimeDelay(timeDelay);
-        ui.loadTrajectoryObjects(tTarget, tSource);
-        ui.trajectorySimulation();
+        LoadUI loadUI = new LoadUI(posVelTarget, posVelSource, timeDelay, args);
         
     }
 }
