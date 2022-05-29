@@ -5,37 +5,54 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+
 public class ListenerController implements ActionListener {
 	
-	private RoundedButton button;
+	private RoundedButton currentButton;
 	private Thread thread;
 	private String[] args;
+	private RoundedButton pauseButton;
+	private RoundedButton restartButton;
 	
-	public ListenerController(RoundedButton button, Thread thread) {
-		this.button = button;
+	
+	public ListenerController(RoundedButton currentButton, Thread thread) {
+		this.currentButton = currentButton;
 		this.thread = thread;
 	}
 	
-	public ListenerController(RoundedButton button, Thread thread, String[] args) {
-		this.button = button;
+	public ListenerController(RoundedButton currentButton, Thread thread, RoundedButton pauseButton, RoundedButton restartButton) {
+		this.currentButton = currentButton;
+		this.thread = thread;
+		this.pauseButton = pauseButton;
+		this.restartButton = restartButton;
+	}
+	
+	public ListenerController(RoundedButton currentButton, Thread thread, String[] args) {
+		this.currentButton = currentButton;
 		this.thread = thread;
 		this.args = args;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (button.getText() == "Pause") {
+		if (currentButton.getText() == "Pause") {
 			// ? Rankings disappear
-			button.setText("Resume");
+			currentButton.setText("Resume");
 			thread.suspend();
-		} else if (button.getText() == "Resume") {
+		} else if (currentButton.getText() == "Resume") {
 			// Same
-			button.setText("Pause");
+			currentButton.setText("Pause");
 			thread.resume();
-		} else if (button.getText() == "Start") {
+			BestScoresTable table = new BestScoresTable();
+	        JScrollPane pane = table.getScrollPane();
+		} else if (currentButton.getText() == "Start") {
 			thread.resume();
-			button.setEnabled(false);
-		} else if (button.getText() == "Try Again") {
+			currentButton.setEnabled(false);
+			pauseButton.setEnabled(true);
+			restartButton.setEnabled(true);
+		} else if (currentButton.getText() == "Try Again") {
 			//
 			StringBuilder cmd = new StringBuilder();
 	        cmd.append(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java ");
@@ -53,7 +70,7 @@ public class ListenerController implements ActionListener {
 				e.printStackTrace();
 			}
 	        System.exit(0);
-		} else if (button.getText() == "Exit") {
+		} else if (currentButton.getText() == "Exit") {
 			System.exit(0);
 		}
 		

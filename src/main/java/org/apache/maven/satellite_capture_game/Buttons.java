@@ -1,9 +1,9 @@
 package org.apache.maven.satellite_capture_game;
 
 import java.awt.Color;
+import java.awt.Cursor;
 
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 
 public class Buttons extends Thread {
 	
@@ -28,21 +28,25 @@ public class Buttons extends Thread {
 		
 		this.thread = thread;
 		
-        controllerStart = new ListenerController(btnStart, thread);
+        controllerStart = new ListenerController(btnStart, thread, btnPause, btnRestart);
         btnStart.setBounds(55, 80, 300, 50);
+        btnStart.setCursor(new Cursor(Cursor.HAND_CURSOR));
         mainFrame.add(btnStart);
         
         btnPause.setBounds(55, 150, 300, 50);
+        btnPause.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnPause.setEnabled(false);
         controllerPause = new ListenerController(btnPause, thread);
         mainFrame.add(btnPause);
         
         btnRestart.setEnabled(false);
         btnRestart.setBounds(55, 220, 300, 50);
+        btnRestart.setCursor(new Cursor(Cursor.HAND_CURSOR));
         controllerRestart = new ListenerController(btnRestart, thread, args);
         mainFrame.add(btnRestart);
         
         btnExit.setBounds(55, 290, 300, 50);
+        btnExit.setCursor(new Cursor(Cursor.HAND_CURSOR));
         controllerExit = new ListenerController(btnExit, thread);
         mainFrame.add(btnExit);
 		

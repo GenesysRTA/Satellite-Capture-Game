@@ -15,7 +15,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
@@ -38,9 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.border.BevelBorder;
-import javax.swing.table.DefaultTableModel;
 
 public final class UI
 {
@@ -86,6 +83,12 @@ public final class UI
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         mainFrame.setResizable(true);
         
+        try {
+			Thread.sleep(20);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        
         JLabel menuTitle = new JLabel("Menu");
         menuTitle.setBounds(170, 25, 200, 50);
         menuTitle.setForeground(Color.WHITE);
@@ -104,6 +107,11 @@ public final class UI
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         bestScoresTitle.setFont(font.deriveFont(attributes));
         mainFrame.add(bestScoresTitle);
+        
+        BestScoresTable table = new BestScoresTable();
+        JScrollPane pane = table.getScrollPane();
+        pane.setVisible(true);
+        mainFrame.add(pane);
 
         JDesktopPane desktopPane = new JDesktopPane() {
 			private static final long serialVersionUID = 7225728388897955897L;
@@ -162,10 +170,7 @@ public final class UI
         ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
         insertBeforePlacenames(wwd, viewControlsLayer);
         wwd.addSelectListener(new ViewControlsSelectListener(wwd, viewControlsLayer));
-        
-        BestScoresTable table = new BestScoresTable();
-        JScrollPane pane = table.getScrollPane();
-        mainFrame.add(pane);
+
     }
 
     public void trajectorySimulation()
