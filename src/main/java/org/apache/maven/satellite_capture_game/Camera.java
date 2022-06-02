@@ -18,10 +18,10 @@ public class Camera {
         return cam;
     }
 	
-	public static void initialConfigurations() {
-		Configuration.setValue(AVKey.INITIAL_LATITUDE, 0.0);
-        Configuration.setValue(AVKey.INITIAL_LONGITUDE, 0.0);
+	public static void initialConfigurations(double lat, double lon) {
+		Configuration.setValue(AVKey.INITIAL_LATITUDE, lat);
+        Configuration.setValue(AVKey.INITIAL_LONGITUDE, lon);
         Configuration.setValue(AVKey.INITIAL_ALTITUDE, 75000000.0);
-        Configuration.setValue(AVKey.INITIAL_PITCH, 50.0);
+        Configuration.setValue(AVKey.INITIAL_PITCH, 10.0);
 	}
 }

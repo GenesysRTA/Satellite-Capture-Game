@@ -84,7 +84,7 @@ public final class UI
         mainFrame.setResizable(true);
         
         try {
-			Thread.sleep(20);
+			Thread.sleep(25);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

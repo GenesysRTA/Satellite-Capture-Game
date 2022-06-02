@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -82,7 +81,7 @@ public class Propagate {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static double[][] executePropagation(final double propagationStep, final double propagationDuration, final double satelliteMass, final double ma, final boolean source) {
+	public static double[][] executePropagation(final double propagationStep, final double propagationDuration, final double satelliteMass, final double ma, final double i, final boolean source) {
 		try {
 
 			final File orekitData = getResourceFile("./data/orekit-data");
@@ -105,7 +104,7 @@ public class Propagate {
 	        final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
 	        final double a = 20000;
 	        final double e = 0.0004342;
-	        final double i = 0.001;
+	        // final double i = 0.001;
 	        final double raan = 323.6970;
 	        final double pa = 10.1842;
 	        
@@ -127,7 +126,7 @@ public class Propagate {
 	        final double cd = 2.0;
 	        final Atmosphere atm = new HarrisPriester(CelestialBodyFactory.getSun(), earth, 6.0);
 
-	        final IsotropicDrag idf = new IsotropicDrag(surface, cd, 0., 0.);
+	        final IsotropicDrag idf = new IsotropicDrag(surface, cd, 0, 0);
 	        numProp.addForceModel(new DragForce(atm, idf));
 	        
 	        final double kR = 0.7;
@@ -140,12 +139,11 @@ public class Propagate {
 	        final OrbitHandler handler = new OrbitHandler();
 	        numProp.setMasterMode(outputStep, handler);
 	        
-	        //final double duration = 2 * 86400.0;
 	        final double duration = startOrbit.getKeplerianPeriod();
 	        
 	        Vector3D vect = new Vector3D(10, 0, 0);
 			DateDetector d = new DateDetector(date);
-			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 1); //0.001
+			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 0.001);
 			
 	        if (source)
 	        {
@@ -165,13 +163,6 @@ public class Propagate {
 	        int index = 0;
 	        
 	        for (Orbit o : handler.getOrbits()) {
-	            // Position along X in inertial frame (m)
-	            final double px = o.getPVCoordinates().getPosition().getX();
-	            // Position along Y in inertial frame (m)
-	            final double py = o.getPVCoordinates().getPosition().getY();
-	            // Position along Z in inertial frame (m)
-	            final double pz = o.getPVCoordinates().getPosition().getZ();
-	            //o.getPVCoordinates().getPosition().getNorm();
 	            GeodeticPoint point = earth.transform(o.getPVCoordinates().getPosition(), o.getFrame(), o.getDate());
 	            
 	            posVel[index][0] = FastMath.toDegrees(point.getLatitude());

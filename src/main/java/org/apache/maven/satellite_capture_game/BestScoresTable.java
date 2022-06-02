@@ -27,7 +27,7 @@ public class BestScoresTable {
         MyTablemodel.addColumn("Distance");
         
         for (int i = 1; i < 11; i++) {
-        	MyTablemodel.addRow(new Object[] {i, ""});
+        	MyTablemodel.addRow(new Object[] {i, "0 m"});
         }
         
         TableColumn tColumn1;

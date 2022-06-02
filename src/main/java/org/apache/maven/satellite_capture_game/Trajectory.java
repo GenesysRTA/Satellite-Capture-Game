@@ -45,6 +45,7 @@ public class Trajectory
         wwd = ui.getWorldWindowGLCanvas();
         s = new Satellite(this.lat, this.lon, this.alt, wwd, isSource);
         e = s.getSatelliteShape();
+
     }
     
     public void propagateTrajectory(int timeDelay)
