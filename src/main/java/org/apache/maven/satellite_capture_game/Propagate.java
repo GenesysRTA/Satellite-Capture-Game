@@ -1,15 +1,11 @@
 package org.apache.maven.satellite_capture_game;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +48,7 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 
 public class Propagate {
+	
 	private static File getResourceFile(final String name) {
 		try {
             final String className = "/" + Propagate.class.getName().replaceAll("\\.", "/") + ".class";
@@ -81,7 +78,7 @@ public class Propagate {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static double[][] executePropagation(final double propagationStep, final double propagationDuration, final double satelliteMass, final double ma, final double i, final boolean source) {
+	public static double[][] executePropagation(final double outputStep, final double satelliteMass, final double ma, final double i, final boolean source) {
 		try {
 
 			final File orekitData = getResourceFile("./data/orekit-data");
@@ -104,7 +101,6 @@ public class Propagate {
 	        final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
 	        final double a = 20000;
 	        final double e = 0.0004342;
-	        // final double i = 0.001;
 	        final double raan = 323.6970;
 	        final double pa = 10.1842;
 	        
@@ -134,14 +130,12 @@ public class Propagate {
 	        ForceModel solarRadiationPressure = new SolarRadiationPressure(CelestialBodyFactory.getSun(), earth.getEquatorialRadius(), irsc);
 	        numProp.addForceModel(solarRadiationPressure);
 	        
-	        final double outputStep = propagationStep;
-	        
 	        final OrbitHandler handler = new OrbitHandler();
 	        numProp.setMasterMode(outputStep, handler);
 	        
 	        final double duration = startOrbit.getKeplerianPeriod();
 	        
-	        Vector3D vect = new Vector3D(10, 0, 0);
+	        Vector3D vect = new Vector3D(Variables.force * Math.cos(Variables.angle), Variables.force * Math.sin(Variables.angle), 0);
 			DateDetector d = new DateDetector(date);
 			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 0.001);
 			
@@ -157,9 +151,7 @@ public class Propagate {
             	ex.printStackTrace();
             }
 	        
-	        printOutput(new File("./OrekitOut.txt"), handler.getOrbits(), startOrbit.getDate());
-	        
-	        double[][] posVel = new double[(int) (duration / outputStep + 1)][3];
+	        double[][] posVel = new double[(int) (duration / outputStep + 1)][6];
 	        int index = 0;
 	        
 	        for (Orbit o : handler.getOrbits()) {
@@ -168,39 +160,19 @@ public class Propagate {
 	            posVel[index][0] = FastMath.toDegrees(point.getLatitude());
 	            posVel[index][1] = FastMath.toDegrees(point.getLongitude());
 	            posVel[index][2] = point.getAltitude();
+	            posVel[index][3] = o.getPVCoordinates().getPosition().getX();
+	            posVel[index][4] = o.getPVCoordinates().getPosition().getY();
+	            posVel[index][5] = o.getPVCoordinates().getPosition().getZ();
 	            index++;
 	        }
 	        return posVel;
 	        
 		} catch (OrekitException e) {
 			e.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
 		}
+		
 		return null;
 	}
-	
-	private static void printOutput(final File output, final List<Orbit> orbits, final AbsoluteDate startDate) throws IOException {
-        // Output format:px, py, pz
-        final String format = new String("%24.16e %24.16e %24.16e");
-        final BufferedWriter buffer = new BufferedWriter(new FileWriter(output));
-        buffer.write("       Xposition(m)           Yposition(m)             Zposition(m)");
-        buffer.newLine();
-        for (Orbit o : orbits) {
-            final Formatter f = new Formatter(new StringBuilder(), Locale.ENGLISH);
-            // Cartesian elements
-            // Position along X in inertial frame (m)
-            final double px = o.getPVCoordinates().getPosition().getX();
-            // Position along Y in inertial frame (m)
-            final double py = o.getPVCoordinates().getPosition().getY();
-            // Position along Z in inertial frame (m)
-            final double pz = o.getPVCoordinates().getPosition().getZ();
-            buffer.write(f.format(format, px, py, pz).toString());
-            buffer.newLine();
-            f.close();
-        }
-        buffer.close();
-    }
 	
 	private static class OrbitHandler implements OrekitFixedStepHandler {
         private final List<Orbit> orbits;

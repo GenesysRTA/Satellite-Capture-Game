@@ -1,10 +1,12 @@
 package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.Model;
+import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.ViewControlsLayer;
@@ -37,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 
 public final class UI
@@ -44,6 +47,7 @@ public final class UI
     private static final JInternalFrame ew = new JInternalFrame("Earth View");
     private boolean firstRun = true;
 
+    JFrame mainFrame;
     private final JPanel mainPanel;
     private final JPanel subPanel;
     private BufferedImage icon;
@@ -52,6 +56,10 @@ public final class UI
     private final WorldWindowGLCanvas wwd;
 
     private Trajectory t, s;
+    
+    private JTextField inputName;
+    private JTextField inputForce;
+    private JTextField inputAngle;
 
     public UI(String[] args) throws IOException
     {
@@ -72,7 +80,7 @@ public final class UI
             ex.printStackTrace();
         }
     	
-        JFrame mainFrame = new JFrame("Satellite Capture Game");
+        mainFrame = new JFrame("Satellite Capture Game");
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int Width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -89,18 +97,26 @@ public final class UI
 			e.printStackTrace();
 		}
         
+        JLabel inputTitle = new JLabel("Input");
+        inputTitle.setBounds(170, 25, 200, 50);
+        inputTitle.setForeground(Color.WHITE);
+        inputTitle.setFont(new Font("Serif", Font.BOLD, 28));
+        mainFrame.add(inputTitle);
+        
+        Input input = new Input(mainFrame, this);
+        
         JLabel menuTitle = new JLabel("Menu");
-        menuTitle.setBounds(170, 25, 200, 50);
+        menuTitle.setBounds(170, 185, 200, 50);
         menuTitle.setForeground(Color.WHITE);
         menuTitle.setFont(new Font("Serif", Font.BOLD, 28));
         mainFrame.add(menuTitle);
         
         Thread thread = Thread.currentThread();
-        Buttons buttons = new Buttons(mainFrame, thread, args);
+        Buttons buttons = new Buttons(mainFrame, thread, args, this);
         buttons.start();
         
         JLabel bestScoresTitle = new JLabel("Best Scores");
-        bestScoresTitle.setBounds(140, 395, 200, 50);
+        bestScoresTitle.setBounds(140, 495, 200, 50);
         bestScoresTitle.setForeground(Color.WHITE);
         Font font = new Font("Serif", Font.PLAIN, 28);
         Map attributes = font.getAttributes();
@@ -173,15 +189,16 @@ public final class UI
 
     }
 
-    public void trajectorySimulation()
+	public void trajectorySimulation()
     {
-        t = getTargetTrajectoryObject();
-        s = getSourceTrajectoryObject();
+        
+        boolean trajTarget;
+        boolean trajSource;
 
         while(true)
         {   
-            t.propagateTrajectory(timeDelay);
-            s.propagateTrajectory(timeDelay);
+        	trajTarget = t.propagateTrajectory(timeDelay);
+        	trajSource = s.propagateTrajectory(timeDelay);
             
             try
             {
@@ -195,20 +212,15 @@ public final class UI
             	Thread.currentThread().suspend();
             	firstRun = false;
             }
+
+            if (!trajTarget && !trajSource) {
+            	break;
+            }
         }
+        // Save input.
     }
     
     private int timeDelay;
-    
-    public Trajectory getTargetTrajectoryObject()
-    {
-        return t;
-    }
-    
-    public Trajectory getSourceTrajectoryObject()
-    {
-        return s;
-    }
     
     public void loadTrajectoryObjects(Trajectory t, Trajectory s)
     {
@@ -221,9 +233,18 @@ public final class UI
         this.timeDelay = timeDelay;
     }
     
+    public int getTimeDelay()
+    {
+        return this.timeDelay;
+    }
+    
     public WorldWindowGLCanvas getWorldWindowGLCanvas()
     {
         return wwd;
+    }
+    
+    public JFrame getMainframe() {
+    	return this.mainFrame;
     }
     
     public static void insertBeforePlacenames(WorldWindow wwd2, Layer layer)

@@ -14,11 +14,11 @@ public class Satellite {
 		//satellite = new Ellipsoid(position, 600000, 600000, 600000);
 		if (isSource)
 		{
-			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled2.dae");
+			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\satellite_visible.dae");
 		}
 		else
 		{
-			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\untitled.dae");
+			modelPath = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\satellite_invisible.dae");
 		}
 		satellite = new SatelliteModel(modelPath, position, wwd);
 		satellite.run();

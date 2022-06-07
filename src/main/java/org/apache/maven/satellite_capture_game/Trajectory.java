@@ -26,6 +26,8 @@ public class Trajectory
     UI ui;
     private Satellite s;
     private SatelliteModel e;
+    
+    private boolean first = true;
 
     public Trajectory(double[][] posVel, UI ui, boolean isSource) {
         this.lat = posVel[0][0];
@@ -48,13 +50,17 @@ public class Trajectory
 
     }
     
-    public void propagateTrajectory(int timeDelay)
+    public boolean propagateTrajectory(int timeDelay)
     {
         pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
 
         index++;
 
         pos.add(index, Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]));
+        
+        lat = posVel[posVelIndex][0];
+        lon = posVel[posVelIndex][1];
+        alt = posVel[posVelIndex][2];
         
         if (posVelIndex < posVel.length - 1) {
         	posVelIndex++;
@@ -64,11 +70,23 @@ public class Trajectory
 
         wwd.redrawNow();
         
-        latPrev = lat;
-        lonPrev = lon;
-        altPrev = alt;
+        latPrev = posVel[posVelIndex][0];
+        lonPrev = posVel[posVelIndex][1];
+        altPrev = posVel[posVelIndex][2];
+        
+        if (!first) {
+        	
+        	if (latPrev == lat && lonPrev == lon && altPrev == alt) {
+            	return false;
+            }
+        	
+        }
 
         index--;
+        
+        first = false;
+        
+        return true;
     }
 
     public double[] getInitialPosition() {
