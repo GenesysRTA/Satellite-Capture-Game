@@ -1,7 +1,11 @@
 package org.apache.maven.satellite_capture_game;
 
+import java.awt.Color;
+
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.Polyline;
 
 import java.util.ArrayList;
 
@@ -14,6 +18,8 @@ public class Trajectory
     private int posVelIndex;
 
     private WorldWindowGLCanvas wwd;
+    private Polyline path;
+    private final RenderableLayer layer;
 
     private double lat;
     private double lon;
@@ -37,6 +43,18 @@ public class Trajectory
         this.lonPrev = posVel[0][1];
         this.altPrev = posVel[0][2];
         this.posVel = posVel;
+        
+        path = new Polyline();
+        if (isSource) {
+        	path.setColor(Color.RED);
+        } else {
+        	path.setColor(Color.BLUE);
+        }
+        path.setLineWidth(3.0);
+        path.setPathType(Polyline.LINEAR);
+        path.setFollowTerrain(false);
+        
+        layer = new RenderableLayer();
 
         pos  = new ArrayList <>();
 
@@ -67,6 +85,7 @@ public class Trajectory
         }
         
         e.setPosition(pos.get(index));
+        path.setPositions(pos);
 
         wwd.redrawNow();
         
@@ -87,6 +106,15 @@ public class Trajectory
         first = false;
         
         return true;
+    }
+    
+    public void loadWorldWindModel(WorldWindowGLCanvas wwd)
+    {
+        this.wwd = wwd;
+
+        layer.addRenderable(path);
+
+        this.wwd.getModel().getLayers().add(layer);
     }
 
     public double[] getInitialPosition() {

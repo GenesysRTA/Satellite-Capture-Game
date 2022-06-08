@@ -37,6 +37,7 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -128,6 +129,12 @@ public final class UI
         JScrollPane pane = table.getScrollPane();
         pane.setVisible(true);
         mainFrame.add(pane);
+        
+        JLabel version = new JLabel("v1.0.0");
+        version.setBounds(0, 970, 200, 50);
+        version.setForeground(Color.WHITE);
+        version.setFont(new Font("Serif", Font.PLAIN, 25));
+        mainFrame.add(version);
 
         JDesktopPane desktopPane = new JDesktopPane() {
 			private static final long serialVersionUID = 7225728388897955897L;
@@ -191,6 +198,11 @@ public final class UI
 
 	public void trajectorySimulation()
     {
+		
+		Trajectory traceSource = getTrajectoryObjectSource();
+		Trajectory traceTarget = getTrajectoryObjectTarget();
+		traceSource.loadWorldWindModel(wwd);
+		traceTarget.loadWorldWindModel(wwd);
         
         boolean trajTarget;
         boolean trajSource;
@@ -226,6 +238,16 @@ public final class UI
     {
         this.t = t;
         this.s = s;
+    }
+    
+    public Trajectory getTrajectoryObjectSource()
+    {
+        return s;
+    }
+    
+    public Trajectory getTrajectoryObjectTarget()
+    {
+        return t;
     }
     
     public void setTimeDelay(int timeDelay)

@@ -5,15 +5,13 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-
-import gov.nasa.worldwind.View;
-import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.geom.Position;
 
 public class Input {
 	
@@ -26,8 +24,6 @@ public class Input {
 	private JTextField angleField;
 	
 	private JButton save;
-	
-	private WorldWindowGLCanvas wwd;
 	
 	public Input(JFrame mainFrame, UI ui) {
 		
@@ -61,6 +57,10 @@ public class Input {
 		forceField.setBounds(125, 115, 200, 25);
 		angleField.setBounds(125, 155, 200, 25);
 		
+		nameField.setText("Anonymous");
+		forceField.setText("0");
+		angleField.setText("0");
+		
 		save.setBounds(335, 90, 65, 80);
 		
 		mainFrame.add(nameLabel);
@@ -70,6 +70,39 @@ public class Input {
 		mainFrame.add(nameField);
 		mainFrame.add(forceField);
 		mainFrame.add(angleField);
+		
+		nameField.addFocusListener(new FocusListener(){
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				nameField.setText("");
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {}
+	    });
+		
+		forceField.addFocusListener(new FocusListener(){
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				forceField.setText("");
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {}
+	    });
+		
+		angleField.addFocusListener(new FocusListener(){
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				angleField.setText("");
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {}
+	    });
 		
 		mainFrame.add(save);
 		

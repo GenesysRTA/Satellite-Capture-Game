@@ -2,6 +2,7 @@ package org.apache.maven.satellite_capture_game;
 
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
 import javax.xml.stream.XMLStreamException;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -18,6 +19,7 @@ public class Main
         final int i = seed.getI();
         
         UI ui = new UI(args);
+        double minDistance = Double.MAX_VALUE;
         
         while (true) {
         	
@@ -55,7 +57,6 @@ public class Main
         		Vector3D[] positionTarget = new Vector3D[posVelTarget.length];
         		Vector3D[] positionSource = new Vector3D[posVelSource.length];
         		double[] distances = new double[posVelTarget.length];
-        		double minDistance = Double.MAX_VALUE;
         		
         		for (int j = 0; j < posVelTarget.length; j++) {
         			
@@ -80,6 +81,10 @@ public class Main
         	}
         	
         }
+        
+        JOptionPane.showMessageDialog(ui.getMainframe(), "You were " + (int) minDistance + " m off!");
+        
+        BestScoresTable.CheckAndPlace(minDistance);
         
     }
     
