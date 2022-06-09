@@ -5,10 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-
 public class ListenerController implements ActionListener {
 	
 	private RoundedButton currentButton;
@@ -16,19 +12,17 @@ public class ListenerController implements ActionListener {
 	private String[] args;
 	private RoundedButton pauseButton;
 	private RoundedButton restartButton;
-	private UI ui;
 	
 	public ListenerController(RoundedButton currentButton, Thread thread) {
 		this.currentButton = currentButton;
 		this.thread = thread;
 	}
 	
-	public ListenerController(RoundedButton currentButton, Thread thread, RoundedButton pauseButton, RoundedButton restartButton, UI ui) {
+	public ListenerController(RoundedButton currentButton, Thread thread, RoundedButton pauseButton, RoundedButton restartButton) {
 		this.currentButton = currentButton;
 		this.thread = thread;
 		this.pauseButton = pauseButton;
 		this.restartButton = restartButton;
-		this.ui = ui;
 	}
 	
 	public ListenerController(RoundedButton currentButton, Thread thread, String[] args) {
@@ -37,6 +31,7 @@ public class ListenerController implements ActionListener {
 		this.args = args;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		if (currentButton.getText() == "Pause") {

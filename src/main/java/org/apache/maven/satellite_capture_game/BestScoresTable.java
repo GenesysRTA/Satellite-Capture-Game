@@ -37,7 +37,6 @@ public class BestScoresTable {
         MyTablemodel.addColumn("Distance");
         
         JTable places = new RowNumberTable(MyTableView);
-        places.setFocusable(false);
         places.setRowSelectionAllowed(false);
         MyScrollPane.setRowHeaderView(places);
         MyScrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, places.getTableHeader());
@@ -88,7 +87,7 @@ public class BestScoresTable {
 				MyTablemodel.setValueAt(Variables.name, i, 0);
 				MyTablemodel.setValueAt((int) distance + " m", i, 1);
 				
-				//SaveInFile(i, distance);
+				SaveInFile(i, distance);
 				
 				break;
 				
@@ -116,7 +115,33 @@ public class BestScoresTable {
 		try {
 			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
 
+			if (!fileContent.get(position).equals("- 0")) {
+				for (int i = fileContent.size() - 2; i >= position; i--) {
+					int post = i + 1;
+					fileContent.set(post, fileContent.get(i));
+				}
+			}
 			fileContent.set(position, Variables.name + " " + (int) distance);
+			
+			Files.write(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void ClearLeaderboard() {
+		
+		try {
+			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
+
+			for (int i = 0; i < fileContent.size(); i++) {
+				
+				fileContent.set(i, "- 0");
+				MyTablemodel.setValueAt("-", i, 0);
+				MyTablemodel.setValueAt("0 m", i, 1);
+				
+			}
 			
 			Files.write(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {

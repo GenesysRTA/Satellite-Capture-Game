@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Cursor;
 
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 
 public class Buttons extends Thread {
 	
@@ -25,11 +24,11 @@ public class Buttons extends Thread {
 	
     Thread thread;
 	
-	public Buttons(JFrame mainFrame, Thread thread, String[] args, UI ui) {
+	public Buttons(JFrame mainFrame, Thread thread, String[] args) {
 		
 		this.thread = thread;
 		
-        controllerStart = new ListenerController(btnStart, thread, btnPause, btnRestart, ui);
+        controllerStart = new ListenerController(btnStart, thread, btnPause, btnRestart);
         btnStart.setBounds(55, 240, 300, 50);
         btnStart.setCursor(new Cursor(Cursor.HAND_CURSOR));
         mainFrame.add(btnStart);

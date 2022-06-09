@@ -24,6 +24,7 @@ public class Input {
 	private JTextField angleField;
 	
 	private JButton save;
+	private JButton clear;
 	
 	public Input(JFrame mainFrame, UI ui) {
 		
@@ -49,6 +50,9 @@ public class Input {
 		save = new JButton("Save");
 		save.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
+		clear = new JButton("Clear");
+		clear.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
 		nameLabel.setBounds(50, 73, 200, 25);
 		forceLabel.setBounds(25, 113, 200, 25);
 		angleLabel.setBounds(45, 153, 200, 25);
@@ -62,6 +66,7 @@ public class Input {
 		angleField.setText("0");
 		
 		save.setBounds(335, 90, 65, 80);
+		clear.setBounds(100, 982, 200, 25);
 		
 		mainFrame.add(nameLabel);
 		mainFrame.add(forceLabel);
@@ -113,6 +118,16 @@ public class Input {
 				Variables.name = nameField.getText();
 				Variables.force = Double.parseDouble(forceField.getText());
 				Variables.angle = Double.parseDouble(angleField.getText());
+			}
+		});
+		
+		mainFrame.add(clear);
+		
+		clear.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BestScoresTable.ClearLeaderboard();
 			}
 		});
 		

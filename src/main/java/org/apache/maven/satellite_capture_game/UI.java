@@ -1,12 +1,10 @@
 package org.apache.maven.satellite_capture_game;
 
 import gov.nasa.worldwind.Model;
-import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
-import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
 import gov.nasa.worldwind.layers.ViewControlsLayer;
@@ -37,10 +35,8 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 
 public final class UI
@@ -57,12 +53,9 @@ public final class UI
     private final WorldWindowGLCanvas wwd;
 
     private Trajectory t, s;
-    
-    private JTextField inputName;
-    private JTextField inputForce;
-    private JTextField inputAngle;
 
-    public UI(String[] args) throws IOException
+    @SuppressWarnings("unchecked")
+	public UI(String[] args) throws IOException
     {
     	try {
             bgImg = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\bg.jpg"));
@@ -113,14 +106,15 @@ public final class UI
         mainFrame.add(menuTitle);
         
         Thread thread = Thread.currentThread();
-        Buttons buttons = new Buttons(mainFrame, thread, args, this);
+        Buttons buttons = new Buttons(mainFrame, thread, args);
         buttons.start();
         
         JLabel bestScoresTitle = new JLabel("Best Scores");
         bestScoresTitle.setBounds(140, 495, 200, 50);
         bestScoresTitle.setForeground(Color.WHITE);
         Font font = new Font("Serif", Font.PLAIN, 28);
-        Map attributes = font.getAttributes();
+        @SuppressWarnings("rawtypes")
+		Map attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         bestScoresTitle.setFont(font.deriveFont(attributes));
         mainFrame.add(bestScoresTitle);
@@ -196,6 +190,7 @@ public final class UI
 
     }
 
+	@SuppressWarnings("deprecation")
 	public void trajectorySimulation()
     {
 		
@@ -229,7 +224,6 @@ public final class UI
             	break;
             }
         }
-        // Save input.
     }
     
     private int timeDelay;

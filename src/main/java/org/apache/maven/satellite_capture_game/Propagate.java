@@ -133,7 +133,7 @@ public class Propagate {
 	        final OrbitHandler handler = new OrbitHandler();
 	        numProp.setMasterMode(outputStep, handler);
 	        
-	        final double duration = 600;
+	        final double duration = startOrbit.getKeplerianPeriod();
 	        
 	        Vector3D vect = new Vector3D(Variables.force * Math.cos(Variables.angle), Variables.force * Math.sin(Variables.angle), 0);
 			DateDetector d = new DateDetector(date);
