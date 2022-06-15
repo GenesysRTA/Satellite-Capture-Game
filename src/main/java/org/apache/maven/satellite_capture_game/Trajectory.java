@@ -9,13 +9,12 @@ import gov.nasa.worldwind.render.Polyline;
 
 import java.util.ArrayList;
 
-public class Trajectory
-{
+public class Trajectory {
     private final ArrayList<Position> pos;
     private int index;
     
-    private double[][] posVel;
-    private int posVelIndex;
+    private double[][] positions;
+    private int positionIndex;
 
     private WorldWindowGLCanvas wwd;
     private Polyline path;
@@ -29,20 +28,21 @@ public class Trajectory
     private double lonPrev;
     private double altPrev;
     
-    UI ui;
-    private Satellite s;
-    private SatelliteModel e;
+    private Satellite satellite;
+    private SatelliteModel satelliteModel;
     
     private boolean first = true;
+    //private boolean isSource = false;
 
-    public Trajectory(double[][] posVel, UI ui, boolean isSource) {
-        this.lat = posVel[0][0];
-        this.lon = posVel[0][1];
-        this.alt = posVel[0][2];
-        this.latPrev = posVel[0][0];
-        this.lonPrev = posVel[0][1];
-        this.altPrev = posVel[0][2];
-        this.posVel = posVel;
+    public Trajectory(double[][] positions, UI ui, boolean isSource) {
+        this.lat = positions[0][0];
+        this.lon = positions[0][1];
+        this.alt = positions[0][2];
+        this.latPrev = positions[0][0];
+        this.lonPrev = positions[0][1];
+        this.altPrev = positions[0][2];
+        this.positions = positions;
+        //this.isSource = isSource;
         
         path = new Polyline();
         if (isSource) {
@@ -59,46 +59,47 @@ public class Trajectory
         pos  = new ArrayList <>();
 
         index = 0;
-        posVelIndex = 1;
+        positionIndex = 1;
         
-        this.ui = ui;
         wwd = ui.getWorldWindowGLCanvas();
-        s = new Satellite(this.lat, this.lon, this.alt, wwd, isSource);
-        e = s.getSatelliteShape();
-
+        satellite = new Satellite(this.lat, this.lon, this.alt, wwd, isSource);
+        satelliteModel = satellite.getSatelliteShape();
     }
     
-    public boolean propagateTrajectory(int timeDelay)
-    {
+    public boolean propagateTrajectory(int timeDelay) {
         pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
 
         index++;
 
-        pos.add(index, Position.fromDegrees(posVel[posVelIndex][0], posVel[posVelIndex][1], posVel[posVelIndex][2]));
+        pos.add(index, Position.fromDegrees(positions[positionIndex][0], positions[positionIndex][1], positions[positionIndex][2]));
         
-        lat = posVel[posVelIndex][0];
-        lon = posVel[posVelIndex][1];
-        alt = posVel[posVelIndex][2];
+        lat = positions[positionIndex][0];
+        lon = positions[positionIndex][1];
+        alt = positions[positionIndex][2];
         
-        if (posVelIndex < posVel.length - 1) {
-        	posVelIndex++;
+//        if (isSource) {
+//        	System.out.println("Source " + posVel[posVelIndex][0] + " " + posVel[posVelIndex][1] + " " + posVel[posVelIndex][2]);
+//        } else {
+//        	System.out.println("Target " + posVel[posVelIndex][0] + " " + posVel[posVelIndex][1] + " " + posVel[posVelIndex][2]);
+//        }
+        
+        if (positionIndex < positions.length - 1) {
+        	positionIndex++;
         }
         
-        e.setPosition(pos.get(index));
+        satelliteModel.setPosition(pos.get(index));
         path.setPositions(pos);
 
         wwd.redrawNow();
         
-        latPrev = posVel[posVelIndex][0];
-        lonPrev = posVel[posVelIndex][1];
-        altPrev = posVel[posVelIndex][2];
+        latPrev = positions[positionIndex][0];
+        lonPrev = positions[positionIndex][1];
+        altPrev = positions[positionIndex][2];
         
         if (!first) {
-        	
         	if (latPrev == lat && lonPrev == lon && altPrev == alt) {
             	return false;
             }
-        	
         }
 
         index--;
@@ -108,8 +109,7 @@ public class Trajectory
         return true;
     }
     
-    public void loadWorldWindModel(WorldWindowGLCanvas wwd)
-    {
+    public void loadWorldWindModel(WorldWindowGLCanvas wwd) {
         this.wwd = wwd;
 
         layer.addRenderable(path);

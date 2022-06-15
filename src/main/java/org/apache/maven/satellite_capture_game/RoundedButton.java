@@ -10,6 +10,7 @@ import javax.swing.JButton;
 class RoundedButton extends JButton {
 
 	private static final long serialVersionUID = -5871741219891486130L;
+	
 	private int radius;
 	private Color bgColor;
 

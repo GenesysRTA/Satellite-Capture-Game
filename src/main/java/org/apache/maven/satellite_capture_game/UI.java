@@ -39,12 +39,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 
-public final class UI
-{
-    private static final JInternalFrame ew = new JInternalFrame("Earth View");
+public final class UI {
+    private static final JInternalFrame internalFrame = new JInternalFrame("Earth View");
     private boolean firstRun = true;
 
-    JFrame mainFrame;
+    private final JFrame mainFrame;
     private final JPanel mainPanel;
     private final JPanel subPanel;
     private BufferedImage icon;
@@ -52,11 +51,12 @@ public final class UI
 
     private final WorldWindowGLCanvas wwd;
 
-    private Trajectory t, s;
+    private Trajectory target;
+    private Trajectory source;
+    private int timeDelay;
 
     @SuppressWarnings("unchecked")
-	public UI(String[] args) throws IOException
-    {
+	public UI(String[] args) throws IOException {
     	try {
             bgImg = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\bg.jpg"));
             icon = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\space.png"));
@@ -97,7 +97,8 @@ public final class UI
         inputTitle.setFont(new Font("Serif", Font.BOLD, 28));
         mainFrame.add(inputTitle);
         
-        Input input = new Input(mainFrame, this);
+        @SuppressWarnings("unused")
+		Input input = new Input(mainFrame, this);
         
         JLabel menuTitle = new JLabel("Menu");
         menuTitle.setBounds(170, 185, 200, 50);
@@ -144,17 +145,17 @@ public final class UI
         mainFrame.add(desktopPane);
 
         ImageIcon frameIcon = new ImageIcon(icon);
-        ew.setResizable(true);
-        ew.setSize(1500,1000);
-        ew.setFrameIcon(frameIcon);
-        ew.setMaximumSize(new Dimension(1150,1000));
+        internalFrame.setResizable(true);
+        internalFrame.setSize(1500,1000);
+        internalFrame.setFrameIcon(frameIcon);
+        internalFrame.setMaximumSize(new Dimension(1150,1000));
         
         // Immobilize JInternalFrame
-        for(MouseListener listener : ((javax.swing.plaf.basic.BasicInternalFrameUI) ew.getUI()).getNorthPane().getMouseListeners()){
-        	((javax.swing.plaf.basic.BasicInternalFrameUI) ew.getUI()).getNorthPane().removeMouseListener(listener);
+        for(MouseListener listener : ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame.getUI()).getNorthPane().getMouseListeners()){
+        	((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame.getUI()).getNorthPane().removeMouseListener(listener);
         }
         
-        ew.setLocation(415, 10);
+        internalFrame.setLocation(415, 10);
 
         mainPanel = new JPanel();
         mainPanel.setOpaque(false);
@@ -162,7 +163,7 @@ public final class UI
         mainPanel.setPreferredSize(new Dimension(1500, 1000));
         mainPanel.setBackground(new Color(160, 160, 160));
         mainPanel.setLayout(new FlowLayout(1, 3, 3));
-        ew.add(mainPanel);
+        internalFrame.add(mainPanel);
 
         subPanel = new JPanel();
         subPanel.setOpaque(true);
@@ -180,9 +181,9 @@ public final class UI
         wwd.setModel(m);
 
         subPanel.add(wwd);
-        ew.setVisible(true);
+        internalFrame.setVisible(true);
 
-        desktopPane.add(ew,JLayeredPane.MODAL_LAYER);
+        desktopPane.add(internalFrame,JLayeredPane.MODAL_LAYER);
         
         ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
         insertBeforePlacenames(wwd, viewControlsLayer);
@@ -191,8 +192,7 @@ public final class UI
     }
 
 	@SuppressWarnings("deprecation")
-	public void trajectorySimulation()
-    {
+	public void trajectorySimulation() {
 		
 		Trajectory traceSource = getTrajectoryObjectSource();
 		Trajectory traceTarget = getTrajectoryObjectTarget();
@@ -202,19 +202,16 @@ public final class UI
         boolean trajTarget;
         boolean trajSource;
 
-        while(true)
-        {   
-        	trajTarget = t.propagateTrajectory(timeDelay);
-        	trajSource = s.propagateTrajectory(timeDelay);
+        while(true) {   
+        	trajTarget = target.propagateTrajectory(timeDelay);
+        	trajSource = source.propagateTrajectory(timeDelay);
             
-            try
-            {
+            try {
                 Thread.sleep(timeDelay);
-            }
-            catch(Exception err)
-            {
+            } catch(Exception err) {
                 System.out.println("Time delay error: " + err + "\n");
             }
+            
             if (firstRun) {
             	Thread.currentThread().suspend();
             	firstRun = false;
@@ -226,36 +223,24 @@ public final class UI
         }
     }
     
-    private int timeDelay;
-    
-    public void loadTrajectoryObjects(Trajectory t, Trajectory s)
-    {
-        this.t = t;
-        this.s = s;
+    public void loadTrajectoryObjects(Trajectory target, Trajectory source) {
+        this.target = target;
+        this.source = source;
     }
     
-    public Trajectory getTrajectoryObjectSource()
-    {
-        return s;
+    public Trajectory getTrajectoryObjectSource() {
+        return source;
     }
     
-    public Trajectory getTrajectoryObjectTarget()
-    {
-        return t;
+    public Trajectory getTrajectoryObjectTarget() {
+        return target;
     }
     
-    public void setTimeDelay(int timeDelay)
-    {
+    public void setTimeDelay(int timeDelay) {
         this.timeDelay = timeDelay;
     }
     
-    public int getTimeDelay()
-    {
-        return this.timeDelay;
-    }
-    
-    public WorldWindowGLCanvas getWorldWindowGLCanvas()
-    {
+    public WorldWindowGLCanvas getWorldWindowGLCanvas() {
         return wwd;
     }
     
@@ -263,8 +248,7 @@ public final class UI
     	return this.mainFrame;
     }
     
-    public static void insertBeforePlacenames(WorldWindow wwd2, Layer layer)
-    {
+    public static void insertBeforePlacenames(WorldWindow wwd2, Layer layer) {
         int compassPosition = 0;
         LayerList layers = wwd2.getModel().getLayers();
         for (Layer l : layers)

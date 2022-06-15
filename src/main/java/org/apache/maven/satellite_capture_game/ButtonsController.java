@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
-public class ListenerController implements ActionListener {
+public class ButtonsController implements ActionListener {
 	
 	private RoundedButton currentButton;
 	private Thread thread;
@@ -13,19 +13,19 @@ public class ListenerController implements ActionListener {
 	private RoundedButton pauseButton;
 	private RoundedButton restartButton;
 	
-	public ListenerController(RoundedButton currentButton, Thread thread) {
+	public ButtonsController(RoundedButton currentButton, Thread thread) {
 		this.currentButton = currentButton;
 		this.thread = thread;
 	}
 	
-	public ListenerController(RoundedButton currentButton, Thread thread, RoundedButton pauseButton, RoundedButton restartButton) {
+	public ButtonsController(RoundedButton currentButton, Thread thread, RoundedButton pauseButton, RoundedButton restartButton) {
 		this.currentButton = currentButton;
 		this.thread = thread;
 		this.pauseButton = pauseButton;
 		this.restartButton = restartButton;
 	}
 	
-	public ListenerController(RoundedButton currentButton, Thread thread, String[] args) {
+	public ButtonsController(RoundedButton currentButton, Thread thread, String[] args) {
 		this.currentButton = currentButton;
 		this.thread = thread;
 		this.args = args;
@@ -46,7 +46,6 @@ public class ListenerController implements ActionListener {
 			pauseButton.setEnabled(true);
 			restartButton.setEnabled(true);
 		} else if (currentButton.getText() == "Try Again") {
-			//
 			StringBuilder cmd = new StringBuilder();
 	        cmd.append(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java ");
 	        for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
@@ -66,7 +65,5 @@ public class ListenerController implements ActionListener {
 		} else if (currentButton.getText() == "Exit") {
 			System.exit(0);
 		}
-		
 	}
-
 }

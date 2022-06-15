@@ -10,18 +10,21 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class TableColumnDesign extends DefaultTableCellRenderer {
 	
 	private static final long serialVersionUID = 7217799136079231243L;
-	private Color backgroundColor, foregroundColor;
 	
-	public TableColumnDesign(Color backgroundColor, Color foregroundColor) {
+	private Color bgColor;
+	private Color color;
+	
+	public TableColumnDesign(Color bgColor, Color color) {
 	   super();
-	   this.backgroundColor = backgroundColor;
-	   this.foregroundColor = foregroundColor;
+	   this.bgColor = bgColor;
+	   this.color = color;
 	   this.setHorizontalTextPosition(JLabel.CENTER);
 	}
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 	      Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-	      cell.setBackground(backgroundColor);
+	      
+	      cell.setBackground(bgColor);
 	      if (row == 0) {
 	    	  cell.setForeground(Color.YELLOW);
 	      } else if (row == 1) {
@@ -29,9 +32,8 @@ public class TableColumnDesign extends DefaultTableCellRenderer {
 	      } else if (row == 2) {
 	    	  cell.setForeground(Color.ORANGE);
 	      }else {
-	    	  cell.setForeground(foregroundColor);
+	    	  cell.setForeground(color);
 	      }
 	      return cell;
-	   }
-	
+	}
 }

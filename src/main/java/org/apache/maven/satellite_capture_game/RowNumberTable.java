@@ -3,14 +3,12 @@ package org.apache.maven.satellite_capture_game;
 import javax.swing.*;
 import javax.swing.table.*;
 
-public class RowNumberTable extends JTable
-{
+public class RowNumberTable extends JTable {
 	private static final long serialVersionUID = 1L;
 	
 	private JTable main;
 
-	public RowNumberTable(JTable table)
-	{
+	public RowNumberTable(JTable table) {
 		main = table;
 		main.getModel().addTableModelListener( this );
 
@@ -28,14 +26,12 @@ public class RowNumberTable extends JTable
 	}
 
 	@Override
-	public int getRowCount()
-	{
+	public int getRowCount() {
 		return main.getRowCount();
 	}
 
 	@Override
-	public int getRowHeight(int row)
-	{
+	public int getRowHeight(int row) {
 		int rowHeight = main.getRowHeight(row);
 
 		if (rowHeight != super.getRowHeight(row))
@@ -47,14 +43,12 @@ public class RowNumberTable extends JTable
 	}
 
 	@Override
-	public Object getValueAt(int row, int column)
-	{
+	public Object getValueAt(int row, int column) {
 		return Integer.toString(row + 1);
 	}
 
 	@Override
-	public boolean isCellEditable(int row, int column)
-	{
+	public boolean isCellEditable(int row, int column) {
 		return false;
 	}
 	

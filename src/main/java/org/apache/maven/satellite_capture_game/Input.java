@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import com.jogamp.newt.event.KeyEvent;
 
 public class Input {
 	
@@ -27,7 +30,6 @@ public class Input {
 	private JButton clear;
 	
 	public Input(JFrame mainFrame, UI ui) {
-		
 		nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Serif", Font.BOLD, 28));
@@ -76,8 +78,7 @@ public class Input {
 		mainFrame.add(forceField);
 		mainFrame.add(angleField);
 		
-		nameField.addFocusListener(new FocusListener(){
-
+		nameField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				nameField.setText("");
@@ -87,8 +88,7 @@ public class Input {
 			public void focusLost(FocusEvent e) {}
 	    });
 		
-		forceField.addFocusListener(new FocusListener(){
-
+		forceField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				forceField.setText("");
@@ -98,8 +98,27 @@ public class Input {
 			public void focusLost(FocusEvent e) {}
 	    });
 		
-		angleField.addFocusListener(new FocusListener(){
+		KeyListener restrictListener = new KeyListener() {
+			@Override
+			public void keyPressed(java.awt.event.KeyEvent e) {}
 
+			@Override
+			public void keyReleased(java.awt.event.KeyEvent e) {}
+
+			@Override
+			public void keyTyped(java.awt.event.KeyEvent e) {
+				char c = e.getKeyChar();
+			    if (c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+			    	if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9' || c == '.')) {
+			    		e.consume();
+			    	}
+			    }
+			}
+		};
+		
+		forceField.addKeyListener(restrictListener);
+		
+		angleField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				angleField.setText("");
@@ -109,28 +128,26 @@ public class Input {
 			public void focusLost(FocusEvent e) {}
 	    });
 		
+		angleField.addKeyListener(restrictListener);
+		
 		mainFrame.add(save);
 		
 		save.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Variables.name = nameField.getText();
-				Variables.force = Double.parseDouble(forceField.getText());
-				Variables.angle = Double.parseDouble(angleField.getText());
+				VariablesUtils.setName(nameField.getText());
+				VariablesUtils.setForce(Double.parseDouble(forceField.getText()));
+				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));
 			}
 		});
 		
 		mainFrame.add(clear);
 		
 		clear.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				BestScoresTable.ClearLeaderboard();
 			}
 		});
-		
 	}
-
 }

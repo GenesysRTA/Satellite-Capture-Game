@@ -1,18 +1,14 @@
 package org.apache.maven.satellite_capture_game;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
 import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
 import org.hipparchus.util.FastMath;
+
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
@@ -48,40 +44,11 @@ import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
 
 public class Propagate {
-	
-	private static File getResourceFile(final String name) {
-		try {
-            final String className = "/" + Propagate.class.getName().replaceAll("\\.", "/") + ".class";
-            final Pattern pattern = Pattern.compile("jar:file:([^!]+)!" + className + "$");
-            final Matcher matcher = pattern.matcher(Propagate.class.getResource(className).toURI().toString());
-            if (matcher.matches()) {
-                final File resourceFile = new File(new File(matcher.group(1)).getParentFile(), name);
-                if (resourceFile.exists()) {
-                    return resourceFile;
-                }
-            }
-            final URL resourceURL = Propagate.class.getResource(name);
-            if (resourceURL != null) {
-                return new File(resourceURL.toURI().getPath());
-            }
-            final File f = new File(name);
-            if (f.exists()) {
-                return f;
-            }
-            throw new IOException("Unable to find orekit-data directory");
-
-        } catch (URISyntaxException use) {
-            throw new RuntimeException(use);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-	}
-	
 	@SuppressWarnings("deprecation")
 	public static double[][] executePropagation(final double outputStep, final double satelliteMass, final double ma, final double i, final boolean source) {
 		try {
 
-			final File orekitData = getResourceFile("./data/orekit-data");
+			final File orekitData = VariablesUtils.getResourceFile("./data/orekit-data");
 			DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(orekitData));
 			
 			final TimeScale timeScale = TimeScalesFactory.getUTC();
@@ -133,14 +100,13 @@ public class Propagate {
 	        final OrbitHandler handler = new OrbitHandler();
 	        numProp.setMasterMode(outputStep, handler);
 	        
-	        final double duration = startOrbit.getKeplerianPeriod();
+	        final double duration = 600;
 	        
-	        Vector3D vect = new Vector3D(Variables.force * Math.cos(Variables.angle), Variables.force * Math.sin(Variables.angle), 0);
+	        Vector3D vect = new Vector3D(VariablesUtils.getForce() * Math.cos(VariablesUtils.getAngle()), VariablesUtils.getForce() * Math.sin(VariablesUtils.getAngle()), 0);
 			DateDetector d = new DateDetector(date);
 			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 0.001);
 			
-	        if (source)
-	        {
+	        if (source) {
 	        	numProp.addEventDetector(thrust);
 	        }
 	        
@@ -151,21 +117,21 @@ public class Propagate {
             	ex.printStackTrace();
             }
 	        
-	        double[][] posVel = new double[(int) (duration / outputStep + 1)][6];
+	        double[][] position = new double[(int) (duration / outputStep + 1)][6];
 	        int index = 0;
 	        
 	        for (Orbit o : handler.getOrbits()) {
 	            GeodeticPoint point = earth.transform(o.getPVCoordinates().getPosition(), o.getFrame(), o.getDate());
 	            
-	            posVel[index][0] = FastMath.toDegrees(point.getLatitude());
-	            posVel[index][1] = FastMath.toDegrees(point.getLongitude());
-	            posVel[index][2] = point.getAltitude();
-	            posVel[index][3] = o.getPVCoordinates().getPosition().getX();
-	            posVel[index][4] = o.getPVCoordinates().getPosition().getY();
-	            posVel[index][5] = o.getPVCoordinates().getPosition().getZ();
+	            position[index][0] = FastMath.toDegrees(point.getLatitude());
+	            position[index][1] = FastMath.toDegrees(point.getLongitude());
+	            position[index][2] = point.getAltitude();
+	            position[index][3] = o.getPVCoordinates().getPosition().getX();
+	            position[index][4] = o.getPVCoordinates().getPosition().getY();
+	            position[index][5] = o.getPVCoordinates().getPosition().getZ();
 	            index++;
 	        }
-	        return posVel;
+	        return position;
 	        
 		} catch (OrekitException e) {
 			e.printStackTrace();
