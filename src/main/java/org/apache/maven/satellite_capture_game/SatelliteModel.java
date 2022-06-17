@@ -33,7 +33,7 @@ public class SatelliteModel extends Thread {
             	colladaRoot.setPitch(Angle.fromDegrees(180));
             }
             colladaRoot.setAltitudeMode(WorldWind.RELATIVE_TO_GROUND);
-            colladaRoot.setModelScale(new Vec4(100000, 100000, 100000));
+            colladaRoot.setModelScale(new Vec4(50000, 50000, 50000));
 
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {

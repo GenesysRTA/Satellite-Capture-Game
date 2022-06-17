@@ -41,7 +41,7 @@ public class BestScoresTable {
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, places.getTableHeader());
         
         try {
-        	File file = new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\leaderboard.txt");
+        	File file = VariablesUtils.getResourceFile(".src/main/java/leaderboard.txt");
         	try (Scanner scanner = new Scanner(file)) {
 				while (scanner.hasNextLine()) {
 				    String data = scanner.nextLine();
@@ -106,7 +106,7 @@ public class BestScoresTable {
 	
 	private static void SaveInFile(int position, double distance) {
 		try {
-			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
+			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
 
 			if (!fileContent.get(position).equals("- 0")) {
 				for (int i = fileContent.size() - 2; i >= position; i--) {
@@ -116,7 +116,7 @@ public class BestScoresTable {
 			}
 			fileContent.set(position, VariablesUtils.getName() + " " + (int) distance);
 			
-			Files.write(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
+			Files.write(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -124,7 +124,7 @@ public class BestScoresTable {
 	
 	public static void ClearLeaderboard() {
 		try {
-			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
+			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
 
 			for (int i = 0; i < fileContent.size(); i++) {
 				fileContent.set(i, "- 0");
@@ -132,7 +132,7 @@ public class BestScoresTable {
 				tablemodel.setValueAt("0 m", i, 1);
 			}
 			
-			Files.write(Paths.get("E:\\Licenta\\satellite-capture-game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
+			Files.write(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

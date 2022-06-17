@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -58,8 +57,8 @@ public final class UI {
     @SuppressWarnings("unchecked")
 	public UI(String[] args) throws IOException {
     	try {
-            bgImg = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\bg.jpg"));
-            icon = ImageIO.read(new File("E:\\Licenta\\satellite-capture-game\\src\\main\\java\\space.png"));
+            bgImg = ImageIO.read(VariablesUtils.getResourceFile("./src/main/java/bg.jpg"));
+            icon = ImageIO.read(VariablesUtils.getResourceFile("./src/main/java/space.png"));
             for (int x = 0; x < icon.getWidth(); x++) {
                 for (int y = 0; y < icon.getHeight(); y++) {
                     int rgba = icon.getRGB(x, y);
@@ -91,14 +90,14 @@ public final class UI {
 			e.printStackTrace();
 		}
         
+        @SuppressWarnings("unused")
+		Input input = new Input(mainFrame, this);
+        
         JLabel inputTitle = new JLabel("Input");
         inputTitle.setBounds(170, 25, 200, 50);
         inputTitle.setForeground(Color.WHITE);
         inputTitle.setFont(new Font("Serif", Font.BOLD, 28));
         mainFrame.add(inputTitle);
-        
-        @SuppressWarnings("unused")
-		Input input = new Input(mainFrame, this);
         
         JLabel menuTitle = new JLabel("Menu");
         menuTitle.setBounds(170, 185, 200, 50);

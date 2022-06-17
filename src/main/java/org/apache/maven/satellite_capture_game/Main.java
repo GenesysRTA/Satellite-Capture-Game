@@ -1,10 +1,13 @@
 package org.apache.maven.satellite_capture_game;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.orekit.data.DataProvidersManager;
+import org.orekit.data.DirectoryCrawler;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -12,13 +15,17 @@ import gov.nasa.worldwind.geom.Position;
 
 public class Main
 {
-    public static void main(String[] args) throws IOException
+    @SuppressWarnings("deprecation")
+	public static void main(String[] args) throws IOException
     {
     	Seed seed = new Seed();
         final int i = seed.getI();
         
         UI ui = new UI(args);
         double minDistance = Double.MAX_VALUE;
+        
+        final File orekitData = VariablesUtils.getResourceFile("./data/orekit-data");
+		DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(orekitData));
         
         while (true) {
         	System.out.println("Waiting for Input...");
@@ -32,7 +39,7 @@ public class Main
         		final double[][] positionTarget = Propagate.executePropagation(outputStepTarget, massTarget, maTarget, i, false);
               
         		final double massSource = 250.0;
-        		final double maSource = maTarget - 15.0;
+        		final double maSource = maTarget - 10.0;
         		final double outputStepSource = 6.0;
         		final double[][] positionSource = Propagate.executePropagation(outputStepSource, massSource, maSource, i, true);
               
@@ -46,7 +53,7 @@ public class Main
         		
         		WorldWindowGLCanvas wwd = ui.getWorldWindowGLCanvas();
         		View view = wwd.getSceneController().getView();
-		        view.goTo(Position.fromDegrees(positionSource[0][0], positionSource[0][1], positionSource[0][2]), 35000000);
+		        view.goTo(Position.fromDegrees(positionSource[0][0], positionSource[0][1], positionSource[0][2]), 10000000);
 		        
         		ui.trajectorySimulation();
         		

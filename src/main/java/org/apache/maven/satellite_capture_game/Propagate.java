@@ -8,7 +8,7 @@ import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
 import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
 import org.hipparchus.util.FastMath;
-
+import org.hipparchus.util.MathUtils;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
@@ -42,15 +42,11 @@ import org.orekit.time.AbsoluteDate;
 import org.orekit.time.TimeScale;
 import org.orekit.time.TimeScalesFactory;
 import org.orekit.utils.Constants;
+import org.orekit.utils.IERSConventions;
 
 public class Propagate {
-	@SuppressWarnings("deprecation")
 	public static double[][] executePropagation(final double outputStep, final double satelliteMass, final double ma, final double i, final boolean source) {
-		try {
-
-			final File orekitData = VariablesUtils.getResourceFile("./data/orekit-data");
-			DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(orekitData));
-			
+		try {			
 			final TimeScale timeScale = TimeScalesFactory.getUTC();
 			
 			final int degree = 12;
@@ -60,13 +56,14 @@ public class Propagate {
 	        final double mu = unnormalized.getMu();
 	        
 	        final Frame frame = FramesFactory.getEME2000();
-	        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS, Constants.WGS84_EARTH_FLATTENING, frame);
+	        final Frame earthFrame = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
+	        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS, Constants.WGS84_EARTH_FLATTENING, earthFrame);
 	        
 	        final double mass = satelliteMass;
 	        final double surface = 10.0;
 	        
 	        final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
-	        final double a = 20000;
+	        final double a = 8350;
 	        final double e = 0.0004342;
 	        final double raan = 323.6970;
 	        final double pa = 10.1842;
@@ -102,9 +99,11 @@ public class Propagate {
 	        
 	        final double duration = 600;
 	        
-	        Vector3D vect = new Vector3D(VariablesUtils.getForce() * Math.cos(VariablesUtils.getAngle()), VariablesUtils.getForce() * Math.sin(VariablesUtils.getAngle()), 0);
-			DateDetector d = new DateDetector(date);
-			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 0.001);
+	        double angle = FastMath.toRadians(VariablesUtils.getAngle());
+	        
+	        Vector3D vect = new Vector3D(VariablesUtils.getForce() * FastMath.cos(angle), VariablesUtils.getForce() * FastMath.sin(angle), 0);
+			DateDetector d = new DateDetector(date.shiftedBy(1));
+			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 1);
 			
 	        if (source) {
 	        	numProp.addEventDetector(thrust);
