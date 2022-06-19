@@ -41,7 +41,7 @@ public class BestScoresTable {
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, places.getTableHeader());
         
         try {
-        	File file = VariablesUtils.getResourceFile(".src/main/java/leaderboard.txt");
+        	File file = VariablesUtils.getResourceFile("./src/main/java/leaderboard.txt");
         	try (Scanner scanner = new Scanner(file)) {
 				while (scanner.hasNextLine()) {
 				    String data = scanner.nextLine();

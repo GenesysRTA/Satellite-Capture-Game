@@ -3,11 +3,27 @@ package org.apache.maven.satellite_capture_game;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
+import org.hipparchus.util.FastMath;
+import org.orekit.bodies.GeodeticPoint;
+import org.orekit.bodies.OneAxisEllipsoid;
 import org.orekit.data.DataProvidersManager;
 import org.orekit.data.DirectoryCrawler;
+import org.orekit.forces.gravity.potential.GravityFieldFactory;
+import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvider;
+import org.orekit.frames.Frame;
+import org.orekit.frames.FramesFactory;
+import org.orekit.orbits.KeplerianOrbit;
+import org.orekit.orbits.Orbit;
+import org.orekit.orbits.PositionAngle;
+import org.orekit.time.AbsoluteDate;
+import org.orekit.time.TimeScale;
+import org.orekit.time.TimeScalesFactory;
+import org.orekit.utils.Constants;
+import org.orekit.utils.IERSConventions;
 
 import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
@@ -26,35 +42,86 @@ public class Main
         
         final File orekitData = VariablesUtils.getResourceFile("./data/orekit-data");
 		DataProvidersManager.getInstance().addProvider(new DirectoryCrawler(orekitData));
+		
+		final TimeScale timeScale = TimeScalesFactory.getUTC();
+		
+		final int degree = 12;
+        final int order = 12;
         
-        while (true) {
+        UnnormalizedSphericalHarmonicsProvider unnormalized = GravityFieldFactory.getConstantUnnormalizedProvider(degree, order);
+        final double mu = unnormalized.getMu();
+        
+        final Frame frame = FramesFactory.getEME2000();
+        final Frame earthFrame = FramesFactory.getITRF(IERSConventions.IERS_2010, true);
+        final OneAxisEllipsoid earth = new OneAxisEllipsoid(Constants.WGS84_EARTH_EQUATORIAL_RADIUS, Constants.WGS84_EARTH_FLATTENING, earthFrame);
+		
+		final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
+        final double a = 8350;
+        final double e = 0.0004342;
+        final double raan = 323.6970;
+        final double pa = 10.1842;
+        
+        final double maTarget = seed.getPosition();
+        final double maSource = maTarget - 10.0;
+        
+        final Orbit startOrbitTarget = new KeplerianOrbit(a * 1000.0, e, FastMath.toRadians(i), FastMath.toRadians(pa), FastMath.toRadians(raan), FastMath.toRadians(maTarget), PositionAngle.MEAN, frame, date, mu);
+        final Orbit startOrbitSource = new KeplerianOrbit(a * 1000.0, e, FastMath.toRadians(i), FastMath.toRadians(pa), FastMath.toRadians(raan), FastMath.toRadians(maSource), PositionAngle.MEAN, frame, date, mu);
+        
+        final Vector3D initialTargetPosition = startOrbitTarget.getPVCoordinates().getPosition();
+		final Vector3D initialSourcePosition = startOrbitSource.getPVCoordinates().getPosition();
+		
+		GeodeticPoint pointSource = earth.transform(startOrbitSource.getPVCoordinates().getPosition(), startOrbitSource.getFrame(), startOrbitSource.getDate());
+        final double initLatitudeSource = FastMath.toDegrees(pointSource.getLatitude());
+        final double initLongitudeSource = FastMath.toDegrees(pointSource.getLongitude());
+        final double initAltitudeSource = pointSource.getAltitude();
+        
+        GeodeticPoint pointTarget = earth.transform(startOrbitTarget.getPVCoordinates().getPosition(), startOrbitTarget.getFrame(), startOrbitTarget.getDate());
+        final double initLatitudeTarget = FastMath.toDegrees(pointTarget.getLatitude());
+        final double initLongitudeTarget = FastMath.toDegrees(pointTarget.getLongitude());
+        final double initAltitudeTarget = pointTarget.getAltitude();
+		
+		final WorldWindowGLCanvas wwd = ui.getWorldWindowGLCanvas();
+		final View view = wwd.getSceneController().getView();
+		view.goTo(Position.fromDegrees(initLatitudeSource, initLongitudeSource, initAltitudeSource), 10000000);
+		
+		double[] posVectSource = new double[3];
+		double[] posVectTarget = new double[3];
+		
+		posVectSource[0] = initLatitudeSource;
+		posVectSource[1] = initLongitudeSource;
+		posVectSource[2] = initAltitudeSource;
+		
+		posVectTarget[0] = initLatitudeTarget;
+		posVectTarget[1] = initLongitudeTarget;
+		posVectTarget[2] = initAltitudeTarget;
+        
+		final Trajectory tTarget = new Trajectory(posVectTarget, ui, false);
+		final Trajectory tSource = new Trajectory(posVectSource, ui, true);
+        
+        final JOptionPane info = new JOptionPane("The distance between satellites is: " + (int) initialTargetPosition.subtract(initialSourcePosition).getNorm() + "m.");
+        final JDialog message = info.createDialog(ui.getMainframe(), "Info");
+        message.setLocation(1100, 95);
+        message.setVisible(true);
+		
+		while (true) {
         	System.out.println("Waiting for Input...");
         	
         	if (VariablesUtils.getName() != null) {
                 System.out.println("Started");
                 
-        		final double massTarget = 1000.0;
-        		final double maTarget = seed.getPosition();
-        		final double outputStepTarget = 6.0;
-        		final double[][] positionTarget = Propagate.executePropagation(outputStepTarget, massTarget, maTarget, i, false);
+                final double outputStep = 6.0;
+                final double massTarget = 1000.0;
+        		final double[][] positionTarget = Propagate.executePropagation(outputStep, massTarget, date, earth, startOrbitTarget, degree, order, false);
               
         		final double massSource = 250.0;
-        		final double maSource = maTarget - 10.0;
-        		final double outputStepSource = 6.0;
-        		final double[][] positionSource = Propagate.executePropagation(outputStepSource, massSource, maSource, i, true);
+        		final double[][] positionSource = Propagate.executePropagation(outputStep, massSource, date, earth, startOrbitSource, degree, order, true);
               
         		final int timeDelay = 100;
               
-        		Trajectory tTarget = new Trajectory(positionTarget, ui, false);
-        		Trajectory tSource = new Trajectory(positionSource, ui, true);
-              
         		ui.setTimeDelay(timeDelay);
+        		tTarget.setPositions(positionTarget);
+        		tSource.setPositions(positionSource);
         		ui.loadTrajectoryObjects(tTarget, tSource);
-        		
-        		WorldWindowGLCanvas wwd = ui.getWorldWindowGLCanvas();
-        		View view = wwd.getSceneController().getView();
-		        view.goTo(Position.fromDegrees(positionSource[0][0], positionSource[0][1], positionSource[0][2]), 10000000);
-		        
         		ui.trajectorySimulation();
         		
         		Vector3D[] positionTargetVector = new Vector3D[positionTarget.length];

@@ -47,7 +47,7 @@ public class SatelliteModel extends Thread {
         }
     }
 
-	protected void addColladaLayer(ColladaRoot colladaRoot) {
+	private void addColladaLayer(ColladaRoot colladaRoot) {
         ColladaController colladaController = new ColladaController(colladaRoot);
 
         RenderableLayer layer = new RenderableLayer();

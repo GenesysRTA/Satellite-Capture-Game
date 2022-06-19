@@ -63,9 +63,7 @@ public final class UI {
                 for (int y = 0; y < icon.getHeight(); y++) {
                     int rgba = icon.getRGB(x, y);
                     Color col = new Color(rgba, true);
-                    col = new Color(255 - col.getRed(),
-                                    255 - col.getGreen(),
-                                    255 - col.getBlue());
+                    col = new Color(255 - col.getRed(), 255 - col.getGreen(), 255 - col.getBlue());
                     icon.setRGB(x, y, col.getRGB());
                 }
             }
@@ -73,7 +71,7 @@ public final class UI {
             ex.printStackTrace();
         }
     	
-        mainFrame = new JFrame("Satellite Capture Game");
+        mainFrame = new JFrame("Satellite Capture");
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         int Width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -91,7 +89,7 @@ public final class UI {
 		}
         
         @SuppressWarnings("unused")
-		Input input = new Input(mainFrame, this);
+		Input input = new Input(mainFrame);
         
         JLabel inputTitle = new JLabel("Input");
         inputTitle.setBounds(170, 25, 200, 50);
@@ -202,8 +200,8 @@ public final class UI {
         boolean trajSource;
 
         while(true) {   
-        	trajTarget = target.propagateTrajectory(timeDelay);
-        	trajSource = source.propagateTrajectory(timeDelay);
+        	trajTarget = target.propagateTrajectory();
+        	trajSource = source.propagateTrajectory();
             
             try {
                 Thread.sleep(timeDelay);

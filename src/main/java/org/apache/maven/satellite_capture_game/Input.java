@@ -29,13 +29,13 @@ public class Input {
 	private JButton save;
 	private JButton clear;
 	
-	public Input(JFrame mainFrame, UI ui) {
+	public Input(JFrame mainFrame) {
 		nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Serif", Font.BOLD, 28));
 		nameLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
-		forceLabel = new JLabel("Force (m/s)");
+		forceLabel = new JLabel("Velocity (m/s)");
 		forceLabel.setForeground(Color.WHITE);
 		forceLabel.setFont(new Font("Serif", Font.BOLD, 20));
 		forceLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
@@ -56,7 +56,7 @@ public class Input {
 		clear.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
 		nameLabel.setBounds(50, 73, 200, 25);
-		forceLabel.setBounds(25, 113, 200, 25);
+		forceLabel.setBounds(5, 113, 200, 25);
 		angleLabel.setBounds(45, 153, 200, 25);
 		
 		nameField.setBounds(125, 75, 200, 25);
@@ -109,7 +109,7 @@ public class Input {
 			public void keyTyped(java.awt.event.KeyEvent e) {
 				char c = e.getKeyChar();
 			    if (c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
-			    	if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9' || c == '.')) {
+			    	if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9' || c == '.' || c == '-')) {
 			    		e.consume();
 			    	}
 			    }

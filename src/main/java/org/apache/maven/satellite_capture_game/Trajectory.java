@@ -32,23 +32,20 @@ public class Trajectory {
     private SatelliteModel satelliteModel;
     
     private boolean first = true;
-    //private boolean isSource = false;
 
-    public Trajectory(double[][] positions, UI ui, boolean isSource) {
-        this.lat = positions[0][0];
-        this.lon = positions[0][1];
-        this.alt = positions[0][2];
-        this.latPrev = positions[0][0];
-        this.lonPrev = positions[0][1];
-        this.altPrev = positions[0][2];
-        this.positions = positions;
-        //this.isSource = isSource;
+    public Trajectory(double[] positions, UI ui, boolean isSource) {
+        this.lat = positions[0];
+        this.lon = positions[1];
+        this.alt = positions[2];
+        this.latPrev = positions[0];
+        this.lonPrev = positions[1];
+        this.altPrev = positions[2];
         
         path = new Polyline();
         if (isSource) {
-        	path.setColor(Color.RED);
+        	path.setColor(Color.GREEN);
         } else {
-        	path.setColor(Color.BLUE);
+        	path.setColor(Color.RED);
         }
         path.setLineWidth(3.0);
         path.setPathType(Polyline.LINEAR);
@@ -66,7 +63,7 @@ public class Trajectory {
         satelliteModel = satellite.getSatelliteShape();
     }
     
-    public boolean propagateTrajectory(int timeDelay) {
+    public boolean propagateTrajectory() {
         pos.add(index, Position.fromDegrees(latPrev, lonPrev, altPrev));
 
         index++;
@@ -76,12 +73,6 @@ public class Trajectory {
         lat = positions[positionIndex][0];
         lon = positions[positionIndex][1];
         alt = positions[positionIndex][2];
-        
-//        if (isSource) {
-//        	System.out.println("Source " + posVel[posVelIndex][0] + " " + posVel[posVelIndex][1] + " " + posVel[posVelIndex][2]);
-//        } else {
-//        	System.out.println("Target " + posVel[posVelIndex][0] + " " + posVel[posVelIndex][1] + " " + posVel[posVelIndex][2]);
-//        }
         
         if (positionIndex < positions.length - 1) {
         	positionIndex++;
@@ -109,21 +100,15 @@ public class Trajectory {
         return true;
     }
     
+    public void setPositions(double[][] positions) {
+    	this.positions = positions;
+    }
+    
     public void loadWorldWindModel(WorldWindowGLCanvas wwd) {
         this.wwd = wwd;
 
         layer.addRenderable(path);
 
         this.wwd.getModel().getLayers().add(layer);
-    }
-
-    public double[] getInitialPosition() {
-    	double[] position = new double[3];
-    	
-    	position[0] = this.lat;
-    	position[1] = this.lon;
-    	position[2] = this.alt;
-    	
-    	return position;
     }
 }
