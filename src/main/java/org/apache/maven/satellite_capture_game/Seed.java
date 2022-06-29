@@ -3,21 +3,27 @@ package org.apache.maven.satellite_capture_game;
 import java.util.Random;
 
 public class Seed {
-	private int position;
-	private int i;
+	private double ma;
+	private double i;
+	private double raan;
 	
 	public Seed() {
 		Random rand = new Random();
 		
-		this.position = rand.nextInt(360) + 100;
-		this.i = rand.nextInt(360) + 1;
+		this.ma = rand.nextDouble() * 360.0;
+		this.i = rand.nextDouble() * 90.0;
+		this.raan = rand.nextDouble() * 360.0;
 	}
 	
-	public int getPosition() {
-		return this.position;
+	public double getMa() {
+		return this.ma;
 	}
 	
-	public int getI() {
+	public double getI() {
 		return this.i;
+	}
+
+	public double getRAAN() {
+		return this.raan;
 	}
 }

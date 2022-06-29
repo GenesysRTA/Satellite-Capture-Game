@@ -8,11 +8,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
+import java.text.ParseException;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import com.jogamp.newt.event.KeyEvent;
 
@@ -23,7 +27,7 @@ public class Input {
 	private JLabel angleLabel;
 	
 	private JTextField nameField;
-	private JTextField forceField;
+	private JSpinner forceField;
 	private JTextField angleField;
 	
 	private JButton save;
@@ -46,7 +50,8 @@ public class Input {
 		angleLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
 		nameField = new JTextField();
-		forceField = new JTextField();
+		forceField = new JSpinner();
+		forceField.setModel(new SpinnerNumberModel(0, -150, 150, 0.1));
 		angleField = new JTextField();
 		
 		save = new JButton("Save");
@@ -59,12 +64,16 @@ public class Input {
 		forceLabel.setBounds(5, 113, 200, 25);
 		angleLabel.setBounds(45, 153, 200, 25);
 		
-		nameField.setBounds(125, 75, 200, 25);
+		nameField.setBounds(125, 75, 185, 25);
+		nameField.setHorizontalAlignment(JTextField.CENTER);
 		forceField.setBounds(125, 115, 200, 25);
-		angleField.setBounds(125, 155, 200, 25);
+		JComponent forceFieldEditor = forceField.getEditor();
+		JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor)forceFieldEditor;
+		spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
+		angleField.setBounds(125, 155, 185, 25);
+		angleField.setHorizontalAlignment(JTextField.CENTER);
 		
 		nameField.setText("Anonymous");
-		forceField.setText("0");
 		angleField.setText("0");
 		
 		save.setBounds(335, 90, 65, 80);
@@ -88,10 +97,10 @@ public class Input {
 			public void focusLost(FocusEvent e) {}
 	    });
 		
-		forceField.addFocusListener(new FocusListener() {
+		spinnerEditor.getTextField().addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				forceField.setText("");
+				spinnerEditor.getTextField().setText("");
 			}
 
 			@Override
@@ -136,7 +145,10 @@ public class Input {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				VariablesUtils.setName(nameField.getText());
-				VariablesUtils.setForce(Double.parseDouble(forceField.getText()));
+				try {
+					forceField.commitEdit();
+				} catch (ParseException ex) {}
+				VariablesUtils.setForce(Double.parseDouble(forceField.getValue().toString()));
 				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));
 			}
 		});

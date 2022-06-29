@@ -29,13 +29,11 @@ import gov.nasa.worldwind.View;
 import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
 import gov.nasa.worldwind.geom.Position;
 
-public class Main
-{
+public class Main {
     @SuppressWarnings("deprecation")
-	public static void main(String[] args) throws IOException
-    {
+	public static void main(String[] args) throws IOException {
     	Seed seed = new Seed();
-        final int i = seed.getI();
+        final double i = seed.getI();
         
         UI ui = new UI(args);
         double minDistance = Double.MAX_VALUE;
@@ -58,10 +56,10 @@ public class Main
 		final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
         final double a = 8350;
         final double e = 0.0004342;
-        final double raan = 323.6970;
+        final double raan = seed.getRAAN();;
         final double pa = 10.1842;
         
-        final double maTarget = seed.getPosition();
+        final double maTarget = seed.getMa();
         final double maSource = maTarget - 10.0;
         
         final Orbit startOrbitTarget = new KeplerianOrbit(a * 1000.0, e, FastMath.toRadians(i), FastMath.toRadians(pa), FastMath.toRadians(raan), FastMath.toRadians(maTarget), PositionAngle.MEAN, frame, date, mu);
@@ -98,7 +96,7 @@ public class Main
 		final Trajectory tTarget = new Trajectory(posVectTarget, ui, false);
 		final Trajectory tSource = new Trajectory(posVectSource, ui, true);
         
-        final JOptionPane info = new JOptionPane("The distance between satellites is: " + (int) initialTargetPosition.subtract(initialSourcePosition).getNorm() + "m.");
+        final JOptionPane info = new JOptionPane("The distance between satellites is: " + (int) (initialTargetPosition.subtract(initialSourcePosition).getNorm()) / 1000 + "km.");
         final JDialog message = info.createDialog(ui.getMainframe(), "Info");
         message.setLocation(1100, 95);
         message.setVisible(true);
@@ -108,13 +106,14 @@ public class Main
         	
         	if (VariablesUtils.getName() != null) {
                 System.out.println("Started");
+                final double duration = startOrbitTarget.getKeplerianPeriod() * 1.1;
                 
-                final double outputStep = 6.0;
+                final double outputStep = 60.0;
                 final double massTarget = 1000.0;
-        		final double[][] positionTarget = Propagate.executePropagation(outputStep, massTarget, date, earth, startOrbitTarget, degree, order, false);
+        		final double[][] positionTarget = Propagate.executePropagation(outputStep, massTarget, date, earth, startOrbitTarget, degree, order, false, duration);
               
         		final double massSource = 250.0;
-        		final double[][] positionSource = Propagate.executePropagation(outputStep, massSource, date, earth, startOrbitSource, degree, order, true);
+        		final double[][] positionSource = Propagate.executePropagation(outputStep, massSource, date, earth, startOrbitSource, degree, order, true, duration);
               
         		final int timeDelay = 100;
               

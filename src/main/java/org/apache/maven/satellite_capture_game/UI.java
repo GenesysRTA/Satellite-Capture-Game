@@ -189,12 +189,9 @@ public final class UI {
     }
 
 	@SuppressWarnings("deprecation")
-	public void trajectorySimulation() {
-		
-		Trajectory traceSource = getTrajectoryObjectSource();
-		Trajectory traceTarget = getTrajectoryObjectTarget();
-		traceSource.loadWorldWindModel(wwd);
-		traceTarget.loadWorldWindModel(wwd);
+	public void trajectorySimulation() {;
+		source.loadWorldWindModel(wwd);
+		target.loadWorldWindModel(wwd);
         
         boolean trajTarget;
         boolean trajSource;
@@ -223,14 +220,6 @@ public final class UI {
     public void loadTrajectoryObjects(Trajectory target, Trajectory source) {
         this.target = target;
         this.source = source;
-    }
-    
-    public Trajectory getTrajectoryObjectSource() {
-        return source;
-    }
-    
-    public Trajectory getTrajectoryObjectTarget() {
-        return target;
     }
     
     public void setTimeDelay(int timeDelay) {

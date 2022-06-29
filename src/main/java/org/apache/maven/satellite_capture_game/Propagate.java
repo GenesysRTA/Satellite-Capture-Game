@@ -1,6 +1,5 @@
 package org.apache.maven.satellite_capture_game;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +7,11 @@ import org.hipparchus.geometry.euclidean.threed.Vector3D;
 import org.hipparchus.ode.nonstiff.AdaptiveStepsizeIntegrator;
 import org.hipparchus.ode.nonstiff.DormandPrince853Integrator;
 import org.hipparchus.util.FastMath;
+import org.orekit.attitudes.AttitudeProvider;
+import org.orekit.attitudes.BodyCenterPointing;
 import org.orekit.bodies.CelestialBodyFactory;
 import org.orekit.bodies.GeodeticPoint;
 import org.orekit.bodies.OneAxisEllipsoid;
-import org.orekit.data.DataProvidersManager;
-import org.orekit.data.DirectoryCrawler;
 import org.orekit.errors.OrekitException;
 import org.orekit.forces.ForceModel;
 import org.orekit.forces.drag.DragForce;
@@ -21,31 +20,21 @@ import org.orekit.forces.gravity.HolmesFeatherstoneAttractionModel;
 import org.orekit.forces.gravity.ThirdBodyAttraction;
 import org.orekit.forces.gravity.potential.GravityFieldFactory;
 import org.orekit.forces.gravity.potential.NormalizedSphericalHarmonicsProvider;
-import org.orekit.forces.gravity.potential.UnnormalizedSphericalHarmonicsProvider;
 import org.orekit.forces.maneuvers.ImpulseManeuver;
 import org.orekit.forces.radiation.IsotropicRadiationSingleCoefficient;
 import org.orekit.forces.radiation.SolarRadiationPressure;
-import org.orekit.frames.Frame;
-import org.orekit.frames.FramesFactory;
 import org.orekit.models.earth.atmosphere.Atmosphere;
 import org.orekit.models.earth.atmosphere.HarrisPriester;
 import org.orekit.orbits.Orbit;
-import org.orekit.orbits.PositionAngle;
-import org.orekit.orbits.KeplerianOrbit;
 import org.orekit.propagation.SpacecraftState;
 import org.orekit.propagation.events.DateDetector;
 import org.orekit.propagation.events.EventDetector;
 import org.orekit.propagation.numerical.NumericalPropagator;
 import org.orekit.propagation.sampling.OrekitFixedStepHandler;
-import org.orekit.propagation.semianalytical.dsst.DSSTPropagator;
 import org.orekit.time.AbsoluteDate;
-import org.orekit.time.TimeScale;
-import org.orekit.time.TimeScalesFactory;
-import org.orekit.utils.Constants;
-import org.orekit.utils.IERSConventions;
 
 public class Propagate {
-	public static double[][] executePropagation(final double outputStep, final double satelliteMass, final AbsoluteDate date, final OneAxisEllipsoid earth, final Orbit startOrbit, final int degree, final int order, final boolean source) {
+	public static double[][] executePropagation(final double outputStep, final double satelliteMass, final AbsoluteDate date, final OneAxisEllipsoid earth, final Orbit startOrbit, final int degree, final int order, final boolean source, final double duration) {
 		try {
 	        final double mass = satelliteMass;
 	        final double surface = 10.0;
@@ -53,9 +42,13 @@ public class Propagate {
 	        final double[][] tol = NumericalPropagator.tolerances(1.0, startOrbit, startOrbit.getType());
 	        final AdaptiveStepsizeIntegrator integrator = new DormandPrince853Integrator(0.001, 1000.0, tol[0], tol[1]);
 	        integrator.setInitialStepSize(0.01);
+	        
+	        final AttitudeProvider attitudeProvider = new BodyCenterPointing(startOrbit.getFrame(), earth);
 		
 	        final NumericalPropagator numProp = new NumericalPropagator(integrator);
 	        numProp.setInitialState(new SpacecraftState(startOrbit, mass));
+	        
+	        numProp.setAttitudeProvider(attitudeProvider);
 
 	        NormalizedSphericalHarmonicsProvider normalized = GravityFieldFactory.getConstantNormalizedProvider(degree, order);
 	        numProp.addForceModel(new HolmesFeatherstoneAttractionModel(earth.getBodyFrame(), normalized));
@@ -77,11 +70,9 @@ public class Propagate {
 	        final OrbitHandler handler = new OrbitHandler();
 	        numProp.setMasterMode(outputStep, handler);
 	        
-	        final double duration = startOrbit.getKeplerianPeriod();
-	        
 	        double angle = FastMath.toRadians(VariablesUtils.getAngle());
 	        
-	        Vector3D vect = new Vector3D(VariablesUtils.getForce() * FastMath.cos(angle), VariablesUtils.getForce() * FastMath.sin(angle), 0);
+	        Vector3D vect = new Vector3D(VariablesUtils.getForce() * FastMath.cos(angle), 0, VariablesUtils.getForce() * FastMath.sin(angle));
 			DateDetector d = new DateDetector(date.shiftedBy(1));
 			EventDetector thrust = new ImpulseManeuver<EventDetector>(d, vect, 1);
 			
