@@ -56,7 +56,7 @@ public class Main {
 		final AbsoluteDate date = new AbsoluteDate("2022-01-01T03:03:05.970", timeScale);
         final double a = 8350;
         final double e = 0.0004342;
-        final double raan = seed.getRAAN();;
+        final double raan = seed.getRAAN();
         final double pa = 10.1842;
         
         final double maTarget = seed.getMa();
@@ -145,6 +145,6 @@ public class Main {
         
         JOptionPane.showMessageDialog(ui.getMainframe(), "You were " + (int) minDistance + " m off!");
         
-        BestScoresTable.CheckAndPlace(minDistance);
+        BestScoresTable.checkAndPlace(minDistance);
     }
 }

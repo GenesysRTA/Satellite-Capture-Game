@@ -6,7 +6,7 @@ import gov.nasa.worldwind.WorldWindow;
 import gov.nasa.worldwind.geom.Position;
 
 public class Satellite {
-	private SatelliteModel satellite;
+	private SatelliteModel satObject;
 	private Position position;
 	private File modelPath;
 
@@ -17,11 +17,11 @@ public class Satellite {
 		} else {
 			modelPath = VariablesUtils.getResourceFile("./src/main/java/satellite_target.dae");
 		}
-		satellite = new SatelliteModel(modelPath, position, wwd, isSource);
-		satellite.run();
+		satObject = new SatelliteModel(modelPath, position, wwd, isSource);
+		satObject.run();
 	}
 	
 	public SatelliteModel getSatelliteShape() {
-		return this.satellite;
+		return this.satObject;
 	}
 }

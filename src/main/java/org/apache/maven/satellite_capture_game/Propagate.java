@@ -1,6 +1,7 @@
 package org.apache.maven.satellite_capture_game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hipparchus.geometry.euclidean.threed.Vector3D;
@@ -107,7 +108,7 @@ public class Propagate {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return new double[0][0];
 	}
 	
 	private static class OrbitHandler implements OrekitFixedStepHandler {

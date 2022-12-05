@@ -19,11 +19,11 @@ import javax.swing.table.TableColumn;
 public class BestScoresTable {
 
 	private JScrollPane scrollPane;
-	private static TableModel tablemodel;
+	private static TableModel tablemodel = new TableModel();
+	private static String path = "C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java";
+	private static String leaderboardFile = "leaderboard.txt";
 	
 	public BestScoresTable() {
-		tablemodel = new TableModel();
-		
 		JTable table = new JTable(tablemodel);
 		table.setRowHeight(40);
 		table.setFocusable(false);
@@ -74,7 +74,7 @@ public class BestScoresTable {
 		
 	}
 	
-	public static void CheckAndPlace(double distance) {
+	public static void checkAndPlace(double distance) {
 		for (int i = 0; i < tablemodel.getRowCount(); i++) {
 			
 			String prevValue = tablemodel.getValueAt(i, 1).toString();
@@ -82,12 +82,12 @@ public class BestScoresTable {
 			double prevScore = Double.parseDouble(components[0]);
 			
 			if (distance < prevScore || prevScore == 0.0f) {
-				ShiftRows(i);
+				shiftRows(i);
 				
 				tablemodel.setValueAt(VariablesUtils.getName(), i, 0);
 				tablemodel.setValueAt((int) distance + " m", i, 1);
 				
-				SaveInFile(i, distance);
+				saveInFile(i, distance);
 				
 				break;
 			}
@@ -98,15 +98,15 @@ public class BestScoresTable {
 		return this.scrollPane;
 	}
 	
-	private static void ShiftRows(int position) {
+	private static void shiftRows(int position) {
 		for (int i = tablemodel.getRowCount() - 2; i >= position; i--) {
 			tablemodel.moveRow(i, i, i + 1);
 		}
 	}
 	
-	private static void SaveInFile(int position, double distance) {
+	private static void saveInFile(int position, double distance) {
 		try {
-			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
+			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get(path, leaderboardFile), StandardCharsets.UTF_8));
 
 			if (!fileContent.get(position).equals("- 0")) {
 				for (int i = fileContent.size() - 2; i >= position; i--) {
@@ -116,15 +116,15 @@ public class BestScoresTable {
 			}
 			fileContent.set(position, VariablesUtils.getName() + " " + (int) distance);
 			
-			Files.write(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
+			Files.write(Paths.get(path, leaderboardFile), fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void ClearLeaderboard() {
+	public static void clearLeaderboard() {
 		try {
-			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), StandardCharsets.UTF_8));
+			List<String> fileContent = new ArrayList<>(Files.readAllLines(Paths.get(path, leaderboardFile), StandardCharsets.UTF_8));
 
 			for (int i = 0; i < fileContent.size(); i++) {
 				fileContent.set(i, "- 0");
@@ -132,7 +132,7 @@ public class BestScoresTable {
 				tablemodel.setValueAt("0 m", i, 1);
 			}
 			
-			Files.write(Paths.get("C:\\FinalizareStudii\\Satellite-Capture-Game\\src\\main\\java", "leaderboard.txt"), fileContent, StandardCharsets.UTF_8);
+			Files.write(Paths.get(path, leaderboardFile), fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

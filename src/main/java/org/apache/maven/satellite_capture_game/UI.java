@@ -53,6 +53,8 @@ public final class UI {
     private Trajectory target;
     private Trajectory source;
     private int timeDelay;
+    
+    private static String fontFamily = "Serif";
 
     @SuppressWarnings("unchecked")
 	public UI(String[] args) throws IOException {
@@ -74,9 +76,9 @@ public final class UI {
         mainFrame = new JFrame("Satellite Capture");
 
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        int Width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        int width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-        mainFrame.setSize(Width - 150, height - 150);
+        mainFrame.setSize(width - 150, height - 150);
 
         mainFrame.setVisible(true);  
         mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -94,13 +96,13 @@ public final class UI {
         JLabel inputTitle = new JLabel("Input");
         inputTitle.setBounds(170, 25, 200, 50);
         inputTitle.setForeground(Color.WHITE);
-        inputTitle.setFont(new Font("Serif", Font.BOLD, 28));
+        inputTitle.setFont(new Font(fontFamily, Font.BOLD, 28));
         mainFrame.add(inputTitle);
         
         JLabel menuTitle = new JLabel("Menu");
         menuTitle.setBounds(170, 185, 200, 50);
         menuTitle.setForeground(Color.WHITE);
-        menuTitle.setFont(new Font("Serif", Font.BOLD, 28));
+        menuTitle.setFont(new Font(fontFamily, Font.BOLD, 28));
         mainFrame.add(menuTitle);
         
         Thread thread = Thread.currentThread();
@@ -110,7 +112,7 @@ public final class UI {
         JLabel bestScoresTitle = new JLabel("Best Scores");
         bestScoresTitle.setBounds(140, 495, 200, 50);
         bestScoresTitle.setForeground(Color.WHITE);
-        Font font = new Font("Serif", Font.PLAIN, 28);
+        Font font = new Font(fontFamily, Font.PLAIN, 28);
         @SuppressWarnings("rawtypes")
 		Map attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
@@ -125,7 +127,7 @@ public final class UI {
         JLabel version = new JLabel("v1.0.0");
         version.setBounds(0, 970, 200, 50);
         version.setForeground(Color.WHITE);
-        version.setFont(new Font("Serif", Font.PLAIN, 25));
+        version.setFont(new Font(fontFamily, Font.PLAIN, 25));
         mainFrame.add(version);
 
         JDesktopPane desktopPane = new JDesktopPane() {
@@ -189,7 +191,7 @@ public final class UI {
     }
 
 	@SuppressWarnings("deprecation")
-	public void trajectorySimulation() {;
+	public void trajectorySimulation() {
 		source.loadWorldWindModel(wwd);
 		target.loadWorldWindModel(wwd);
         

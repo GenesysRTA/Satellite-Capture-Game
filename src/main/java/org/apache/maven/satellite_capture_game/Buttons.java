@@ -46,6 +46,7 @@ public class Buttons extends Thread {
         mainFrame.add(btnExit);
 	}
 	
+	@Override
 	public void run() {
 		btnStart.addActionListener(controllerStart);
 		btnPause.addActionListener(controllerPause);

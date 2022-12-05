@@ -33,20 +33,22 @@ public class Input {
 	private JButton save;
 	private JButton clear;
 	
+	private static String fontFamily = "Serif";
+	
 	public Input(JFrame mainFrame) {
 		nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.WHITE);
-		nameLabel.setFont(new Font("Serif", Font.BOLD, 28));
+		nameLabel.setFont(new Font(fontFamily, Font.BOLD, 28));
 		nameLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
 		forceLabel = new JLabel("Velocity (m/s)");
 		forceLabel.setForeground(Color.WHITE);
-		forceLabel.setFont(new Font("Serif", Font.BOLD, 20));
+		forceLabel.setFont(new Font(fontFamily, Font.BOLD, 20));
 		forceLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
 		angleLabel = new JLabel("Angle (°)");
 		angleLabel.setForeground(Color.WHITE);
-		angleLabel.setFont(new Font("Serif", Font.BOLD, 20));
+		angleLabel.setFont(new Font(fontFamily, Font.BOLD, 20));
 		angleLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
 		nameField = new JTextField();
@@ -94,7 +96,9 @@ public class Input {
 			}
 
 			@Override
-			public void focusLost(FocusEvent e) {}
+			public void focusLost(FocusEvent e) {
+				// No need
+			}
 	    });
 		
 		spinnerEditor.getTextField().addFocusListener(new FocusListener() {
@@ -104,15 +108,21 @@ public class Input {
 			}
 
 			@Override
-			public void focusLost(FocusEvent e) {}
+			public void focusLost(FocusEvent e) {
+				// No need
+			}
 	    });
 		
 		KeyListener restrictListener = new KeyListener() {
 			@Override
-			public void keyPressed(java.awt.event.KeyEvent e) {}
+			public void keyPressed(java.awt.event.KeyEvent e) {
+				// No need
+			}
 
 			@Override
-			public void keyReleased(java.awt.event.KeyEvent e) {}
+			public void keyReleased(java.awt.event.KeyEvent e) {
+				// No need
+			}
 
 			@Override
 			public void keyTyped(java.awt.event.KeyEvent e) {
@@ -134,7 +144,9 @@ public class Input {
 			}
 
 			@Override
-			public void focusLost(FocusEvent e) {}
+			public void focusLost(FocusEvent e) {
+				// No need
+			}
 	    });
 		
 		angleField.addKeyListener(restrictListener);
@@ -147,7 +159,9 @@ public class Input {
 				VariablesUtils.setName(nameField.getText());
 				try {
 					forceField.commitEdit();
-				} catch (ParseException ex) {}
+				} catch (ParseException ex) {
+					System.out.println(ex.getStackTrace());
+				}
 				VariablesUtils.setForce(Double.parseDouble(forceField.getValue().toString()));
 				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));
 			}
@@ -158,7 +172,7 @@ public class Input {
 		clear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				BestScoresTable.ClearLeaderboard();
+				BestScoresTable.clearLeaderboard();
 			}
 		});
 	}

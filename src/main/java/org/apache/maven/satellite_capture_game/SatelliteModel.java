@@ -25,6 +25,7 @@ public class SatelliteModel extends Thread {
         this.isSource = isSource;
     }
 
+	@Override
 	public void run() {
         try {
             colladaRoot = ColladaRoot.createAndParse(this.colladaSource);
@@ -56,7 +57,7 @@ public class SatelliteModel extends Thread {
     }
 	
 	public void setPosition(Position position) {
-		this.colladaRoot.setPosition(position);;
+		this.colladaRoot.setPosition(position);
 	}
 
 }
