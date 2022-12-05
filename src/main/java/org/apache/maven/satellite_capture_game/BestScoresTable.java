@@ -14,6 +14,8 @@ import java.util.Scanner;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.table.TableColumn;
 
 public class BestScoresTable {
@@ -38,7 +40,7 @@ public class BestScoresTable {
         JTable places = new RowNumberTable(table);
         places.setRowSelectionAllowed(false);
         scrollPane.setRowHeaderView(places);
-        scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, places.getTableHeader());
+        scrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, places.getTableHeader());
         
         try {
         	File file = VariablesUtils.getResourceFile("./src/main/java/leaderboard.txt");
@@ -60,7 +62,7 @@ public class BestScoresTable {
         Color gray = new Color(100, 100, 100);
         
         TableColumnDesign centerRenderer = new TableColumnDesign(gray, Color.BLACK);
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         
         placesColumn = places.getColumnModel().getColumn(0);
         

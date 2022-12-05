@@ -5,6 +5,7 @@ import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class TableColumnDesign extends DefaultTableCellRenderer {
@@ -18,7 +19,7 @@ public class TableColumnDesign extends DefaultTableCellRenderer {
 	   super();
 	   this.bgColor = bgColor;
 	   this.color = color;
-	   this.setHorizontalTextPosition(JLabel.CENTER);
+	   this.setHorizontalTextPosition(SwingConstants.CENTER);
 	}
 
 	@Override

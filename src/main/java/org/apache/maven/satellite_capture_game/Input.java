@@ -9,6 +9,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 
 import com.jogamp.newt.event.KeyEvent;
 
@@ -69,13 +71,13 @@ public class Input {
 		angleLabel.setBounds(45, 153, 200, 25);
 		
 		nameField.setBounds(125, 75, 185, 25);
-		nameField.setHorizontalAlignment(JTextField.CENTER);
+		nameField.setHorizontalAlignment(SwingConstants.CENTER);
 		forceField.setBounds(125, 115, 200, 25);
 		JComponent forceFieldEditor = forceField.getEditor();
 		JSpinner.DefaultEditor spinnerEditor = (JSpinner.DefaultEditor)forceFieldEditor;
-		spinnerEditor.getTextField().setHorizontalAlignment(JTextField.CENTER);
+		spinnerEditor.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
 		angleField.setBounds(125, 155, 185, 25);
-		angleField.setHorizontalAlignment(JTextField.CENTER);
+		angleField.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		nameField.setText("Anonymous");
 		angleField.setText("0");
@@ -163,7 +165,7 @@ public class Input {
 					forceField.commitEdit();
 				} catch (ParseException ex) {
 					Logger logger = Logger.getLogger(Main.class.getName());
-		        	logger.log(Level.INFO, ex.getStackTrace().toString());
+		        	logger.log(Level.INFO, Arrays.toString(ex.getStackTrace()));
 				}
 				VariablesUtils.setForce(Double.parseDouble(forceField.getValue().toString()));
 				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));

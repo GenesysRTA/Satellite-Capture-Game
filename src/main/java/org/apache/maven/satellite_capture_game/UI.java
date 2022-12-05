@@ -26,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.font.TextAttribute;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -38,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 
 public final class UI {
@@ -77,13 +79,13 @@ public final class UI {
     	
         mainFrame = new JFrame("Satellite Capture");
 
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         int width = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         mainFrame.setSize(width - 150, height - 150);
 
         mainFrame.setVisible(true);  
-        mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        mainFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
         mainFrame.setResizable(true);
         
         try {
@@ -209,7 +211,7 @@ public final class UI {
                 Thread.sleep(timeDelay);
             } catch(Exception err) {
                 Logger logger = Logger.getLogger(UI.class.getName());
-            	logger.log(Level.INFO, "Time delay error: " + err + "\n");
+            	logger.log(Level.INFO, "Time delay error: {0}\n", err);
                 Thread.currentThread().interrupt();
             }
             
