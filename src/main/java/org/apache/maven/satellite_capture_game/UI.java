@@ -18,6 +18,8 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -88,6 +90,7 @@ public final class UI {
 			Thread.sleep(25);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
         
         @SuppressWarnings("unused")
@@ -205,7 +208,9 @@ public final class UI {
             try {
                 Thread.sleep(timeDelay);
             } catch(Exception err) {
-                System.out.println("Time delay error: " + err + "\n");
+                Logger logger = Logger.getLogger(UI.class.getName());
+            	logger.log(Level.INFO, "Time delay error: " + err + "\n");
+                Thread.currentThread().interrupt();
             }
             
             if (firstRun) {

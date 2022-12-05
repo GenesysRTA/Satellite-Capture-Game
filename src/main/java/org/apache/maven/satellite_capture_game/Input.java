@@ -9,6 +9,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -160,7 +162,8 @@ public class Input {
 				try {
 					forceField.commitEdit();
 				} catch (ParseException ex) {
-					System.out.println(ex.getStackTrace());
+					Logger logger = Logger.getLogger(Main.class.getName());
+		        	logger.log(Level.INFO, ex.getStackTrace().toString());
 				}
 				VariablesUtils.setForce(Double.parseDouble(forceField.getValue().toString()));
 				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));

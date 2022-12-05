@@ -34,18 +34,18 @@ public class ButtonsController implements ActionListener {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (currentButton.getText() == "Pause") {
+		if (currentButton.getText().equals("Pause")) {
 			currentButton.setText("Resume");
 			thread.suspend();
-		} else if (currentButton.getText() == "Resume") {
+		} else if (currentButton.getText().equals("Resume")) {
 			currentButton.setText("Pause");
 			thread.resume();
-		} else if (currentButton.getText() == "Start") {
+		} else if (currentButton.getText().equals("Start")) {
 			thread.resume();
 			currentButton.setEnabled(false);
 			pauseButton.setEnabled(true);
 			restartButton.setEnabled(true);
-		} else if (currentButton.getText() == "Try Again") {
+		} else if (currentButton.getText().equals("Try Again")) {
 			StringBuilder cmd = new StringBuilder();
 	        cmd.append(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java ");
 	        for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
@@ -62,7 +62,7 @@ public class ButtonsController implements ActionListener {
 				e.printStackTrace();
 			}
 	        System.exit(0);
-		} else if (currentButton.getText() == "Exit") {
+		} else if (currentButton.getText().equals("Exit")) {
 			System.exit(0);
 		}
 	}

@@ -2,6 +2,8 @@ package org.apache.maven.satellite_capture_game;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -102,10 +104,11 @@ public class Main {
         message.setVisible(true);
 		
 		while (true) {
-        	System.out.println("Waiting for Input...");
+        	Logger logger = Logger.getLogger(Main.class.getName());
+        	logger.log(Level.INFO, "Waiting for Input...");
         	
         	if (VariablesUtils.getName() != null) {
-                System.out.println("Started");
+            	logger.log(Level.INFO, "Started");
                 final double duration = startOrbitTarget.getKeplerianPeriod() * 1.1;
                 
                 final double outputStep = 60.0;

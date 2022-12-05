@@ -18,7 +18,7 @@ public class Satellite {
 			modelPath = VariablesUtils.getResourceFile("./src/main/java/satellite_target.dae");
 		}
 		satObject = new SatelliteModel(modelPath, position, wwd, isSource);
-		satObject.run();
+		satObject.start();
 	}
 	
 	public SatelliteModel getSatelliteShape() {
