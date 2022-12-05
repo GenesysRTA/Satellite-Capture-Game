@@ -211,7 +211,7 @@ public final class UI {
                 Thread.sleep(timeDelay);
             } catch(Exception err) {
                 Logger logger = Logger.getLogger(UI.class.getName());
-            	logger.log(Level.INFO, "Time delay error: {0}\n", err);
+            	logger.log(Level.SEVERE, "Time delay error: \n", err);
                 Thread.currentThread().interrupt();
             }
             

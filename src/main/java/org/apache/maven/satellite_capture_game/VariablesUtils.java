@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,9 +62,11 @@ public class VariablesUtils {
             }
             throw new IOException("Unable to find file");
         } catch (URISyntaxException use) {
-            throw new RuntimeException(use);
+        	Logger logger = Logger.getLogger(UI.class.getName());
+        	logger.log(Level.SEVERE, "Time delay error: \n", use);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+        	Logger logger = Logger.getLogger(UI.class.getName());
+        	logger.log(Level.SEVERE, "Time delay error: \n", e);
         }
 	}
 }
