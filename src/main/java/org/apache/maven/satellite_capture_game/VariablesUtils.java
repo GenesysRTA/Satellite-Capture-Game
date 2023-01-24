@@ -11,34 +11,44 @@ import java.util.regex.Pattern;
 
 public class VariablesUtils {
 	
+	// Variable storing the name of the player
 	private static String name;
+	// Variable storing the force applied to the satellite
 	private static double force;
+	// Variable storing the angle
 	private static double angle;
 	
+	// Setter - Name
 	public static void setName(String name) {
 		VariablesUtils.name = name;
 	}
 	
+	// Getter - Name
 	public static String getName() {
 		return VariablesUtils.name;
 	}
 	
+	// Setter - Force
 	public static void setForce(double force) {
 		VariablesUtils.force = force;
 	}
 	
+	// Getter - Force
 	public static double getForce() {
 		return VariablesUtils.force;
 	}
 	
+	// Setter - Angle
 	public static void setAngle(double angle) {
 		VariablesUtils.angle = angle;
 	}
 	
+	// Getter - Angle
 	public static double getAngle() {
 		return VariablesUtils.angle;
 	}
 	
+	// Method used for dealing with files
 	public static File getResourceFile(final String name) {
 		try {
             final String className = "/" + Propagate.class.getName().replaceAll("\\.", "/") + ".class";
@@ -68,5 +78,6 @@ public class VariablesUtils {
         	Logger logger = Logger.getLogger(UI.class.getName());
         	logger.log(Level.SEVERE, "Time delay error: \n", e);
         }
+		return null;
 	}
 }
