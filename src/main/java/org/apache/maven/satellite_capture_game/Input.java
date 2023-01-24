@@ -26,46 +26,84 @@ import com.jogamp.newt.event.KeyEvent;
 
 public class Input {
 	
+	// Variable used for storing the name label
 	private JLabel nameLabel;
+	
+	// Variable used for storing the force label
 	private JLabel forceLabel;
+	
+	// Variable used for storing the angle label
 	private JLabel angleLabel;
 	
+	// Variable used for storing the name field
 	private JTextField nameField;
+	
+	// Variable used for storing the force spinner
 	private JSpinner forceField;
+	
+	// Variable used for storing the angle field
 	private JTextField angleField;
 	
+	// Variable used for storing the save button
 	private JButton save;
+	
+	// Variable used for storing the clear button
 	private JButton clear;
 	
+	// Variable used for storing the font
 	private static String fontFamily = "Serif";
 	
+	// Constructor
 	public Input(JFrame mainFrame) {
+		// Create the name label
 		nameLabel = new JLabel("Name");
+		
+		// Add name label settings
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font(fontFamily, Font.BOLD, 28));
 		nameLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
+		// Create the force label
 		forceLabel = new JLabel("Velocity (m/s)");
+		
+		// Add force label settings
 		forceLabel.setForeground(Color.WHITE);
 		forceLabel.setFont(new Font(fontFamily, Font.BOLD, 20));
 		forceLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
+		// Create the angle label
 		angleLabel = new JLabel("Angle (°)");
+		
+		// Add force label settings
 		angleLabel.setForeground(Color.WHITE);
 		angleLabel.setFont(new Font(fontFamily, Font.BOLD, 20));
 		angleLabel.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		
+		// Create the name field
 		nameField = new JTextField();
+		
+		// Create the force spinner
 		forceField = new JSpinner();
+		
+		// Add force spinner settings
 		forceField.setModel(new SpinnerNumberModel(0, -150, 150, 0.1));
+		
+		// Create the angle field
 		angleField = new JTextField();
 		
+		// Create the save button
 		save = new JButton("Save");
+		
+		// Add save button settings
 		save.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
+		// Create the clear button
 		clear = new JButton("Clear");
+		
+		// Add clear button settings
 		clear.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		
+		// Add additional settings
 		nameLabel.setBounds(50, 73, 200, 25);
 		forceLabel.setBounds(5, 113, 200, 25);
 		angleLabel.setBounds(45, 153, 200, 25);
@@ -85,14 +123,17 @@ public class Input {
 		save.setBounds(335, 90, 65, 80);
 		clear.setBounds(100, 982, 200, 25);
 		
+		// Add all 3 label to the frame
 		mainFrame.add(nameLabel);
 		mainFrame.add(forceLabel);
 		mainFrame.add(angleLabel);
 		
+		// Add all 3 fields to the frame
 		mainFrame.add(nameField);
 		mainFrame.add(forceField);
 		mainFrame.add(angleField);
 		
+		// Add a listener to the name field
 		nameField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -105,6 +146,7 @@ public class Input {
 			}
 	    });
 		
+		//Add the clear button to the force field
 		spinnerEditor.getTextField().addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -141,6 +183,7 @@ public class Input {
 		
 		forceField.addKeyListener(restrictListener);
 		
+		// Add a listener to the angle field
 		angleField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -155,8 +198,10 @@ public class Input {
 		
 		angleField.addKeyListener(restrictListener);
 		
+		//Add the save button to the frame
 		mainFrame.add(save);
 		
+		// Add a listener to the save button
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -172,8 +217,10 @@ public class Input {
 			}
 		});
 		
+		//Add the clear button to the frame
 		mainFrame.add(clear);
 		
+		// Add a listener to the clear button
 		clear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
