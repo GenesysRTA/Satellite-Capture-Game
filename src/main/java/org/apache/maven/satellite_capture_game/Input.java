@@ -159,6 +159,7 @@ public class Input {
 			}
 	    });
 		
+		// Listener used to make sure that only digits can be used when setting the force and angle
 		KeyListener restrictListener = new KeyListener() {
 			@Override
 			public void keyPressed(java.awt.event.KeyEvent e) {
@@ -172,21 +173,32 @@ public class Input {
 
 			@Override
 			public void keyTyped(java.awt.event.KeyEvent e) {
+				
+				// Variable used for storing the character being introduced
 				char c = e.getKeyChar();
+				
+				// Check if the character is different than Space and Delete and if it is...
 			    if (c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+			    	
+			    	// Check if the character is different than a digit, dot or minus and if it is...
 			    	if (!(c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9' || c == '.' || c == '-')) {
+			    		
+			    		// Ignore the character
 			    		e.consume();
 			    	}
 			    }
 			}
 		};
 		
+		// Apply the restrict listener to the force field
 		forceField.addKeyListener(restrictListener);
 		
 		// Add a listener to the angle field
 		angleField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusGained(FocusEvent e) {
+				
+				// Remove the value from the angle field
 				angleField.setText("");
 			}
 
@@ -196,6 +208,7 @@ public class Input {
 			}
 	    });
 		
+		// Apply the restrict listener to the angle field
 		angleField.addKeyListener(restrictListener);
 		
 		//Add the save button to the frame
@@ -205,14 +218,25 @@ public class Input {
 		save.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				// Set the name value
 				VariablesUtils.setName(nameField.getText());
+				
+				// Save the value from the field
 				try {
 					forceField.commitEdit();
+				
+				// If there is an exception...
 				} catch (ParseException ex) {
+					// Print the stack trace
 					Logger logger = Logger.getLogger(Main.class.getName());
 		        	logger.log(Level.INFO, Arrays.toString(ex.getStackTrace()));
 				}
+				
+				// Set the force value
 				VariablesUtils.setForce(Double.parseDouble(forceField.getValue().toString()));
+				
+				// Set the angle value
 				VariablesUtils.setAngle(Double.parseDouble(angleField.getText()));
 			}
 		});
@@ -224,6 +248,8 @@ public class Input {
 		clear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				// Clear the rankings table
 				BestScoresTable.clearLeaderboard();
 			}
 		});
